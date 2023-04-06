@@ -33,7 +33,10 @@ block content
               i.lock.icon
               input(type='password' name='password' placeholder='Password')
           button.ui.fluid.large.teal.submit.button(type='submit') Login
-        .ui.error.message
+        .ui.error.message(class= messages.length > 0 ? 'visible' : 'hidden')
+          ul.list
+            each message in messages
+              li= message
       .ui.message
         | New to us? 
         a(href='/register') Register
