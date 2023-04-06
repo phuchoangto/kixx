@@ -55,4 +55,16 @@ module.exports = {
     });
     return user;
   },
+
+  getUserById: async (id) => {
+    const user = await db.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        roles: true,
+      },
+    });
+    return user;
+  },
 };

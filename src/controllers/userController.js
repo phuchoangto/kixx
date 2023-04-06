@@ -34,4 +34,18 @@ module.exports = {
       }
     },
   ],
+
+  getUserData: async (req, res) => {
+    let { id } = req.params;
+    id = parseInt(id, 10);
+    try {
+      const user = await userService.getUserById(id);
+      return res.json({ user });
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ message: 'Internal server error' });
+    }
+  },
 };
