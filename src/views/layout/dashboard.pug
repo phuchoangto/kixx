@@ -1,0 +1,91 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css")
+    link(rel="stylesheet", href="/css/dashboard.css")
+    block styles
+  body
+    #sidebar.ui.sidebar.inverted.vertical.menu.sidebar-menu
+      .item
+        .header General
+        .menu
+          a.item
+            div
+              i.icon.tachometer.alternate
+              |                     Dashboard
+      .item
+        .header
+          | Administration
+        .menu
+          a.item
+            div
+              i.cogs.icon
+              | Settings
+          a.item
+            div
+              i.users.icon
+              | Team
+      a.item(href='#')
+        div
+          i.icon.chart.line
+          |             Charts
+      a.item
+        div
+          i.icon.lightbulb
+          |             Apps
+      .item
+        .header Other
+        .menu
+          a.item(href='#')
+            div
+              i.icon.envelope
+              |                     Messages
+          a.item(href='#')
+            div
+              i.icon.calendar.alternate
+              |                     Calendar
+      .item
+        form(action='#')
+          .ui.mini.action.input
+            input(type='text' placeholder='Search...')
+            button.ui.mini.icon.button
+              i.search.icon
+      .ui.segment.inverted
+        .ui.tiny.olive.inverted.progress
+          .bar(style='width: 54%;')
+          .label Monthly Bandwidth
+        .ui.tiny.teal.inverted.progress
+          .bar(style='width: 78%;')
+          .label Disk Usage
+
+    nav.ui.top.fixed.inverted.menu
+      .left.menu
+        a.sidebar-menu-toggler.item(href='#' data-target='#sidebar')
+          i.sidebar.icon
+        a.header.item(href='#')
+          | Semantic UI
+      .right.menu
+        a.item(href='#')
+          i.bell.icon
+        .ui.dropdown.item
+          i.user.cirlce.icon
+          .menu
+            a.item(href='#')
+              i.info.circle.icon
+              |  Profile
+            a.item(href='#')
+              i.wrench.icon
+              |                     Settings
+            a.item(href='#')
+              i.sign-out.icon
+              |                     Logout
+
+    block content
+    script(src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js")
+    script(src="/js/dashboard.js") 
+    block scripts
