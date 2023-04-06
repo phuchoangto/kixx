@@ -24,7 +24,7 @@ model User {
 
 model UserRoles {
   id     Int  @id @default(autoincrement())
-  userId Int  @unique
+  userId Int
   user   User @relation(fields: [userId], references: [id])
 
   role Role @default(STUDENT)

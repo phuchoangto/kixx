@@ -12,6 +12,7 @@ router.get('/login', authController.login);
 router.post('/login', authController.loginPost);
 
 router.get('/dashboard', dashboardController.index);
-router.get('/dashboard/users', userController.manage);
+router.get('/dashboard/users', userController.manageUser);
+router.post('/dashboard/users', userController.addUser);
 
 module.exports = router;
