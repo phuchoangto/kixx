@@ -1,5 +1,10 @@
+const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+
 module.exports = {
-  index: (req, res) => {
-    res.render('dashboard/index', { title: 'Dashboard' });
-  },
+  index: [
+    ensureAuthenticated,
+    (req, res) => {
+      res.render('dashboard', { title: 'Dashboard' });
+    },
+  ],
 };
