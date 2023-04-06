@@ -1,0 +1,56 @@
+extend ../layout/dashboard
+ 
+
+block content 
+ .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          table.ui.celled.padded.table
+            thead
+              tr
+                th.single.line ID
+                th Lastname 
+                th Firstname
+                th Faculity 
+                th UserID
+            tbody
+              tr
+                foreach student in students             
+                  td
+                    h2.ui.center.aligned.header A
+                  td.single.line
+                    | studentid
+                  td
+                    .ui.star.rating(data-rating='3' data-max-rating='3')
+                  td.right.aligned
+                    | 80% 
+                    br
+                    a(href='#') 18 studies
+                  td
+                    | Creatine supplementation is the reference compound for increasing muscular creatine levels; there is variability in this increase, however, with some nonresponders.
+                tr
+                  td
+                    h2.ui.center.aligned.header A
+                  td.single.line
+                    | Weight
+                  td
+                    .ui.star.rating(data-rating='3' data-max-rating='3')
+                  td.right.aligned
+                    | 100% 
+                    br
+                    a(href='#') 65 studies
+                  td
+                    | Creatine is the reference compound for power improvement, with numbers from one meta-analysis to assess potency
+              tfoot
+                tr
+                  th(colspan='5')
+                    .ui.right.floated.pagination.menu
+                      a.icon.item
+                        i.left.chevron.icon
+                      a.item 1
+                      a.item 2
+                      a.item 3
+                      a.item 4
+                      a.icon.item
+                        i.right.chevron.icon
