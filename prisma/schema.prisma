@@ -13,16 +13,26 @@ enum Role {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  username  String  @unique
-  email     String? @unique
-  firstName String
-  lastName  String
-  imageUrl  String?
-  role      Role    @default(STUDENT)
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  password String
+  email    String? @unique
+  role     Role    @default(STUDENT)
 
+  student Student?
+}
+
+model Student {
+  id Int @id
+
+  firstName String?
+  lastName  String?
   facultyId Int?
-  faculty   Faculty? @relation(fields: [facultyId], references: [id])
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  faculty Faculty? @relation(fields: [facultyId], references: [id])
 
   checkIns EventCheckIn[]
 }
@@ -31,8 +41,8 @@ model Faculty {
   id   Int    @id @default(autoincrement())
   name String @unique
 
-  users  User[]
-  events Event[]
+  students Student[]
+  events   Event[]
 }
 
 model Event {
@@ -51,8 +61,8 @@ model Event {
 
 model EventCheckIn {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  studentId Int
+  student   Student  @relation(fields: [studentId], references: [id])
   eventId   Int
   event     Event    @relation(fields: [eventId], references: [id])
   createdAt DateTime @default(now())
