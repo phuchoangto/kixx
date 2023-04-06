@@ -35,7 +35,7 @@ block content
                           .ui.label(class= role.role === 'ADMIN' ? 'violet' : 'teal') #{role.role}
                       td
                         .ui.icon.buttons
-                          a.ui.basic.button(onclick='openEditUserModal(this)')
+                          a.ui.basic.button(onclick=`openEditUserModal(${user.id})`)
                             i.edit.icon
                           a.ui.basic.button(href='/dashboard/users/' + user.id + '/delete')
                             i.trash.icon
@@ -70,6 +70,7 @@ block modal
       | Edit User
     .content
       form#editUserForm.ui.form(method='POST')
+        input(type='hidden' name='id')
         .field
           label Username
           input(type='text' name='username' placeholder='Username')
@@ -84,11 +85,11 @@ block modal
           select.multiple.dropdown(name='roles' multiple)
             option(value="ADMIN") ADMIN
             option(value="STUDENT") STUDENT
-        #addUserErrors.ui.error.message
+        #editUserErrors.ui.error.message
     .actions
       .ui.black.deny.button
         | Nope
-      #addUserButton.ui.positive.right.labeled.icon.button
+      #editUserButton.ui.positive.right.labeled.icon.button
         | Yep, that's me
         i.checkmark.icon
 
@@ -98,13 +99,13 @@ block scripts
       $('#addUserModal').modal('show');
     }
 
-    function openEditUserModal(element) {
-      const id = $(element).closest('tr').data('id');
+    function openEditUserModal(id) {
       $.ajax({
         type: 'GET',
         url: '/dashboard/users/' + id,
         success: function(data) {
           console.log(data);
+          $('#editUserModal input[name="id"]').val(data.user.id);
           $('#editUserModal input[name="username"]').val(data.user.username);
           $('#editUserModal input[name="email"]').val(data.user.email);
           $('#editUserModal').modal('show');
@@ -158,7 +159,7 @@ block scripts
               `<div class="ui label violet">ADMIN</div>`,
               `
                 <div class="ui icon buttons">
-                  <a class="ui basic button" onclick="openEditUserModal(this)"><i class="edit icon"></i></a>
+                  <a class="ui basic button" onclick="openEditUserModal(${data.user.id})"><i class="edit icon"></i></a>
                   <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
                 </div>
               `
