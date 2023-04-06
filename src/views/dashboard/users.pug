@@ -1,0 +1,38 @@
+extends ../layout/dashboard
+
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          table.ui.celled.padded.table
+            thead
+              tr
+                th Id
+                th Username
+                th Email
+                th Role
+            tbody
+              each user in users
+                tr
+                  td #{user.id}
+                  td #{user.username}
+                  td #{user.email}
+                  td
+                    each role in user.roles
+                      .ui.label #{role.role}
+            tfoot
+              tr
+                th(colspan='5')
+                  .ui.large.green.labeled.icon.button
+                    i.plus.icon
+                    | Add User
+                  .ui.right.floated.pagination.menu
+                    a.icon.item
+                      i.left.chevron.icon
+                    a.item 1
+                    a.item 2
+                    a.item 3
+                    a.item 4
+                    a.icon.item
+                      i.right.chevron.icon
