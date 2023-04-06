@@ -17,9 +17,17 @@ model User {
   username String  @unique
   password String
   email    String? @unique
-  role     Role    @default(STUDENT)
 
+  roles   UserRoles[]
   student Student?
+}
+
+model UserRoles {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  role Role @default(STUDENT)
 }
 
 model Student {
