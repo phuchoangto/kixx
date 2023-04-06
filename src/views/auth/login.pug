@@ -22,53 +22,18 @@ block content
         img.image(src='https://semantic-ui.com/images/logo.png', alt='logo')
         .content
           | Log-in to your account
-      form.ui.large.form
+      form.ui.large.form(method='POST' action='/login')
         .ui.stacked.segment
           .field
             .ui.left.icon.input
               i.user.icon
-              input(type='text' name='email' placeholder='E-mail address')
+              input(type='text' name='username' placeholder='Username')
           .field
             .ui.left.icon.input
               i.lock.icon
               input(type='password' name='password' placeholder='Password')
-          .ui.fluid.large.teal.submit.button Login
+          button.ui.fluid.large.teal.submit.button(type='submit') Login
         .ui.error.message
       .ui.message
         | New to us? 
-        a(href='#') Sign Up
-
-block scripts
-  script.
-    $(document).ready(function() {
-      $('.ui.form').form({
-        fields: {
-          email: {
-            identifier: 'email',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Please enter your e-mail'
-              },
-              {
-                type: 'email',
-                prompt: 'Please enter a valid e-mail'
-              }
-            ]
-          },
-          password: {
-            identifier: 'password',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Please enter your password'
-              },
-              {
-                type: 'length[6]',
-                prompt: 'Your password must be at least 6 characters'
-              }
-            ]
-          }
-        }
-      });
-    })
+        a(href='/register') Register
