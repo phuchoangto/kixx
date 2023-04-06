@@ -7,90 +7,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
+enum Role {
   ADMIN
-  USER
-}
-
-enum OrderStatus {
-  PENDING
-  SHIPPING
-  DELIVERED
-  CANCELLED
+  STUDENT
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  email     String? @unique
+  firstName String
+  lastName  String
+  imageUrl  String?
+  role      Role    @default(STUDENT)
 
-  orders            Order[]
-  shippingAddresses ShippingAddress[]
+  facultyId Int?
+  faculty   Faculty? @relation(fields: [facultyId], references: [id])
+
+  checkIns EventCheckIn[]
 }
 
-model Product {
+model Faculty {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  users  User[]
+  events Event[]
+}
+
+model Event {
   id          Int      @id @default(autoincrement())
   name        String
-  description String?  @db.Text
-  price       Decimal
-  discount    Decimal? @default(0)
+  description String?
+  start       DateTime
+  end         DateTime
   imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  variants ProductVariant[]
+  facultyId Int?
+  faculty   Faculty? @relation(fields: [facultyId], references: [id])
+
+  checkIns EventCheckIn[]
 }
 
-model ProductVariant {
+model EventCheckIn {
   id        Int      @id @default(autoincrement())
-  name      String
-  price     Decimal
-  discount  Decimal? @default(0)
-  imageUrl  String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id])
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  productId  Int
-  product    Product     @relation(fields: [productId], references: [id])
-  orderItems OrderItem[]
-}
-
-model Order {
-  id        Int         @id @default(autoincrement())
-  status    OrderStatus @default(PENDING)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
-  userId Int
-  user   User        @relation(fields: [userId], references: [id])
-  items  OrderItem[]
-}
-
-model OrderItem {
-  id        Int      @id @default(autoincrement())
-  quantity  Int
-  price     Decimal
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  orderId          Int
-  order            Order          @relation(fields: [orderId], references: [id])
-  productVariantId Int
-  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
-}
-
-model ShippingAddress {
-  id        Int      @id @default(autoincrement())
-  address   String
-  city      String
-  state     String
-  country   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
 }
