@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 module.exports = {
-  getAllStudent: async () => {
+  getAllStudents: async () => {
     const students = await db.student.findMany();
     return students;
   },

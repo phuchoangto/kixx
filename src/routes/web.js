@@ -13,6 +13,6 @@ router.post('/login', authController.loginPost);
 
 router.get('/dashboard', dashboardController.index);
 
-router.get('/dashboard/students', studentController.studentList);
+router.get('/dashboard/students', studentController.manage);
 
 module.exports = router;

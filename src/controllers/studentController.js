@@ -1,8 +1,8 @@
-const studentServices = require('../studentServices/studentManage');
+const studentServices = require('../services/studentService');
 
 module.exports = {
-  studentList: async (req, res) => {
-    const students = await studentServices.getAllStudent();
-    res.render('dashboard/students', { student: students });
+  manage: async (req, res) => {
+    const students = await studentServices.getAllStudents();
+    res.render('dashboard/students', { students });
   },
 };
