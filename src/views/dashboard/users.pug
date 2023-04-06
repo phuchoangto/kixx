@@ -24,7 +24,7 @@ block content
             tfoot
               tr
                 th(colspan='5')
-                  .ui.large.green.labeled.icon.button
+                  .ui.large.green.labeled.icon.button(onclick='openAddUserModal()')
                     i.plus.icon
                     | Add User
                   .ui.right.floated.pagination.menu
@@ -36,3 +36,83 @@ block content
                     a.item 4
                     a.icon.item
                       i.right.chevron.icon
+
+block modal
+  .ui.modal
+    i.close.icon
+    .header
+      | Add User
+    .content
+      form#addUserForm.ui.form(method='POST')
+        .field
+          label Username
+          input(type='text' name='username' placeholder='Username')
+        .field
+          label Email
+          input(type='email' name='email' placeholder='Email')
+        .field
+          label Password
+          input(type='password' name='password' placeholder='Password')
+        #addUserErrors.ui.error.message
+    .actions
+      .ui.black.deny.button
+        | Nope
+      #addUserButton.ui.positive.right.labeled.icon.button
+        | Yep, that's me
+        i.checkmark.icon
+
+block scripts
+  script.
+    function openAddUserModal() {
+      $('.ui.modal').modal('show');
+    }
+
+    $(document).ready(function() {
+      $('#addUserButton').click(function(e) {
+        e.stopPropagation();
+        $.ajax({
+          type: 'POST',
+          url: '/dashboard/users',
+          data: {
+            username: $('#addUserForm input[name="username"]').val(),
+            email: $('#addUserForm input[name="email"]').val(),
+            password: $('#addUserForm input[name="password"]').val()  
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+            
+            // add user to table
+            const table = $('table.ui.celled.padded.table');
+            const tbody = table.find('tbody');
+            const user = data.user;
+            const tr = $(`<tr>
+              <td>${user.id}</td>
+              <td>${user.username}</td>
+              <td>${user.email}</td>
+              <td>
+                <div class="ui label">${user.roles[0].role}</div>
+              </td>
+            </tr>`);
+            tbody.prepend(tr);
+
+            // hide modal
+            $('.ui.modal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#addUserErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
+    });

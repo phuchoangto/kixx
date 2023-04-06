@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const { Role } = require('@prisma/client');
+const UserAlreadyExistsError = require('../errors/userAlreadyExistsError');
 const db = require('../config/db');
 
 module.exports = {
@@ -11,7 +13,7 @@ module.exports = {
     return users;
   },
 
-  addUser: async (username, email, password, roles) => {
+  addUser: async (username, email, password) => {
     // check if user already exists
     const userExists = await db.user.findMany({
       where: {
@@ -26,7 +28,7 @@ module.exports = {
       },
     });
     if (userExists.length > 0) {
-      throw new Error('User already exists');
+      throw new UserAlreadyExistsError('User already exists');
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await db.user.create({
@@ -35,7 +37,9 @@ module.exports = {
         email,
         password: hashedPassword,
         roles: {
-          create: roles.map((role) => ({ role })),
+          create: {
+            role: Role.ADMIN,
+          },
         },
       },
       include: {
