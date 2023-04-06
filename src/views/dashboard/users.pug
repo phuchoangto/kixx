@@ -97,18 +97,19 @@ block scripts
             });
             
             // add user to table
-            const table = $('table.ui.celled.padded.table');
-            const tbody = table.find('tbody');
-            const user = data.user;
-            const tr = $(`<tr>
-              <td>${user.id}</td>
-              <td>${user.username}</td>
-              <td>${user.email}</td>
-              <td>
-                <div class="ui label">${user.roles[0].role}</div>
-              </td>
-            </tr>`);
-            tbody.prepend(tr);
+            const table = $('table.ui.celled.padded.table').DataTable();
+            table.row.add([
+              data.user.id,
+              data.user.username,
+              data.user.email,
+              `<div class="ui violet teal">ADMIN</div>`,
+              `
+                <div class="ui icon buttons">
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/edit"><i class="edit icon"></i></a>
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
+                </div>
+              `
+            ]).draw(false);
 
             // hide modal
             $('.ui.modal').modal('hide');
