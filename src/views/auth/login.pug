@@ -69,6 +69,21 @@ block scripts
               }
             ]
           }
+        },
+        onSuccess: function(event, fields) {
+          event.preventDefault();
+          console.log(fields);
+          $.ajax({
+            url: '/login',
+            type: 'POST',
+            data: $('.ui.form').serialize(),
+            success: function(data) {
+              window.location.href = '/dashboard';
+            },
+            error: function(xhr, status, error) {
+              // Xử lý lỗi nếu có
+            }
+          });
         }
       });
     })

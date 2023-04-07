@@ -8,7 +8,7 @@ module.exports = {
   loginPost: (req, res, next) => {
     passport.authenticate('local', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login',
+      failureRedirect: '/dashboard',
       failureFlash: true,
     })(req, res, next);
   },
