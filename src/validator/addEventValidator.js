@@ -4,9 +4,7 @@ module.exports = {
   addEventValidator: [
     body('name')
       .notEmpty()
-      .withMessage('Name is required')
-      .isLength({ min: 6 })
-      .withMessage('name must be at least 6 characters'),
+      .withMessage('Name is required'),
     body('description')
       .notEmpty()
       .withMessage('Description is required'),
@@ -31,13 +29,9 @@ module.exports = {
         return true;
       }),
     body('imageUrl')
-      .notEmpty()
-      .withMessage('Image URL is required')
       .isURL()
       .withMessage('Image URL is invalid'),
     body('facultyId')
-      .notEmpty()
-      .withMessage('Faculty is required')
       .isInt()
       .withMessage('Faculty is invalid'),
   ],

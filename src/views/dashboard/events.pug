@@ -31,7 +31,10 @@ block content
                       td #{event.id}
                       td #{event.name}
                       td #{event.description}
-                      td #{event.start.toLocaleDateString('en-GB')}  #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - #{event.end.toLocaleDateString('en-GB')}  #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      td
+                        | #{event.start.toLocaleDateString('en-GB')} #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
+                        br
+                        | #{event.end.toLocaleDateString('en-GB')} #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       td 
                         img(src=`${event.imageUrl}`)
                       td #{event.faculty.name}
@@ -48,48 +51,58 @@ block modal
     .header
       | Add Event
     .content
-      form#addUserForm.ui.form(method='POST')
+      form#addEventForm.ui.form(method='POST')
         .field
-          label Username
-          input(type='text' name='username' placeholder='Username')
+          label Event name
+          input(type='text' name='name' placeholder='Event name')
         .field
-          label Email
-          input(type='email' name='email' placeholder='Email')
+          label Description
+          input(type='text' name='description' placeholder='Description')
         .field
-          label Password
-          input(type='password' name='password' placeholder='Password')
-        #addUserErrors.ui.error.message
+          label Start
+          input(type='date' name='start' placeholder='Start')
+          .field
+          label End
+          input(type='date' name='end' placeholder='End')
+          .field
+          label Image
+          input(type='text' name='imageUrl' placeholder='Image')
+          .field
+          label Faculty
+          input(type='number' name='facultyId' placeholder='Faculty')
+        #addEventErrors.ui.error.message
     .actions
       .ui.black.deny.button
         | Nope
-      #addUserButton.ui.positive.right.labeled.icon.button
-        | Yep, that's me
+      #addEventButton.ui.positive.right.labeled.icon.button
+        | Confirm
         i.checkmark.icon
 
 block scripts
   
   script.
-    function openAddUserModal() {
+    function openAddEventModal() {
       $('.ui.modal').modal('show');
     }
 
     $(document).ready(function() {
-      // init datatable
+      
       $('table.ui.celled.padded.table').DataTable({
         // order id column descending
         order: [[0, 'desc']]
       });
-
-
-      $('#addUserButton').click(function(e) {
+      $('#addEventButton').click(function(e) {
         e.stopPropagation();
         $.ajax({
           type: 'POST',
-          url: '/dashboard/users',
+          url: '/dashboard/events',
           data: {
-            username: $('#addUserForm input[name="username"]').val(),
-            email: $('#addUserForm input[name="email"]').val(),
-            password: $('#addUserForm input[name="password"]').val()  
+            name: $('#addEventForm input[name="name"]').val(),
+            description: $('#addEventForm input[name="description"]').val(),
+            start: $('#addEventForm input[name="start"]').val(),
+            end: $('#addEventForm input[name="end"]').val(),
+            imageUrl: $('#addEventForm input[name="imageUrl"]').val(),
+            facultyId: $('#addEventForm input[name="facultyId"]').val()
           },
           success: function(data) {
             console.log(data);
@@ -98,29 +111,19 @@ block scripts
               message: data.message,
               position: 'topRight'
             });
-            
-            // add user to table
-            const table = $('table.ui.celled.padded.table').DataTable();
-            table.row.add([
-              data.user.id,
-              data.user.username,
-              data.user.email,
-              `<div class="ui label violet">ADMIN</div>`,
-              `
-                <div class="ui icon buttons">
-                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/edit"><i class="edit icon"></i></a>
-                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
-                </div>
-              `
-            ]).draw(false);
 
-            // hide modal
+
+
             $('.ui.modal').modal('hide');
           },
+
+            
+
+
           error: function(data) {
             console.log(data);
             const errors = data.responseJSON.errors;
-            const errorList = $('#addUserErrors');
+            const errorList = $('#addEventErrors');
             errorList.empty();
             errors.forEach(function(error) {
               errorList.append(`<li>${error.msg}</li>`);

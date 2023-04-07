@@ -6,7 +6,7 @@ const EventAlreadyExistsError = require('../errors/eventAlreadyExistsError');
 
 module.exports = {
   manageEvent: async (req, res) => {
-    const events = await eventService.getAllEvent();
+    const events = await eventService.getAllEvents();
     return res.render('dashboard/events', { title: 'Manage Events', events });
   },
 
@@ -32,7 +32,7 @@ module.exports = {
         }
         return res
           .status(500)
-          .json({ errors: [{ msg: 'Internal server error' }] });
+          .json({ errors: [{ msg: error.message }] });
       }
     },
   ],

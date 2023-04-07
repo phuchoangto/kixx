@@ -2,7 +2,7 @@ const EventAlreadyExistsError = require('../errors/eventAlreadyExistsError');
 const db = require('../config/db');
 
 module.exports = {
-  getAllEvent: async () => {
+  getAllEvents: async () => {
     const events = await db.event.findMany({
       include: {
         faculty: true,
@@ -10,9 +10,7 @@ module.exports = {
     });
     return events;
   },
-
   addEvent: async (name, description, start, end, imageUrl, facultyId) => {
-    // check if event already exists
     const eventExists = await db.event.findMany({
       where: {
         name,
@@ -21,14 +19,20 @@ module.exports = {
     if (eventExists.length > 0) {
       throw new EventAlreadyExistsError('Event already exists');
     }
+    const startDateTime = new Date(start);
+    const endDateTime = new Date(end);
     const event = await db.event.create({
       data: {
         name,
         description,
-        start,
-        end,
+        start: startDateTime,
+        end: endDateTime,
         imageUrl,
-        facultyId,
+        faculty: {
+          connect: {
+            id: parseInt(facultyId, 10),
+          },
+        },
       },
     });
     return event;
