@@ -32,7 +32,8 @@ block content
                       td #{event.name}
                       td #{event.description}
                       td #{event.start.toLocaleDateString('en-GB')}  #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - #{event.end.toLocaleDateString('en-GB')}  #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                      td #{event.imageUrl}
+                      td 
+                        img(src=`${event.imageUrl}`)
                       td #{event.faculty.name}
                       td
                         .ui.icon.buttons
