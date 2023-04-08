@@ -31,6 +31,18 @@ module.exports = {
     if (!student) {
       throw new StudentNotFoundError();
     }
+
+    // check if student has already checked in
+    const existingCheckIn = await db.eventCheckIn.findFirst({
+      where: {
+        eventId,
+        studentId,
+      },
+    });
+    if (existingCheckIn) {
+      return existingCheckIn;
+    }
+
     const eventCheckIn = await db.eventCheckIn.create({
       data: {
         event: {

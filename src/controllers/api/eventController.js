@@ -1,7 +1,9 @@
+const { validationResult } = require('express-validator');
 const jwtAuthenticated = require('../../middlewares/jwtAuthenticated');
 const eventService = require('../../services/eventService');
 const EventNotFoundError = require('../../errors/eventNotFoundError');
 const StudentNotFoundError = require('../../errors/studentNotFoundError');
+const { checkInValidator } = require('../../validator/checkInValidator');
 
 module.exports = {
   getUpcomingEvents: [
@@ -19,10 +21,17 @@ module.exports = {
 
   checkIn: [
     jwtAuthenticated,
+    checkInValidator,
     async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array(), message: 'Validation error' });
+        return;
+      }
       try {
-        const eventId = req.params.id;
-        const { studentId } = req.body;
+        const eventId = parseInt(req.params.id, 10);
+        let { studentId } = req.body;
+        studentId = parseInt(studentId, 10);
         const eventCheckIn = await eventService.checkIn(eventId, studentId);
         res.json(eventCheckIn);
       } catch (err) {
