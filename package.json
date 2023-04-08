@@ -21,8 +21,10 @@
     "express-session": "^1.17.3",
     "express-validator": "^6.15.0",
     "http-errors": "~1.6.3",
+    "jsonwebtoken": "^9.0.0",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pug": "^3.0.2"
   },

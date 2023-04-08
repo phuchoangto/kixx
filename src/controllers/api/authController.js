@@ -1,26 +1,9 @@
 const jwt = require('jsonwebtoken');
-const passport = require('../config/passport');
-const jwtAuthenticated = require('../middlewares/jwtAuthenticated');
+const passport = require('../../config/passport');
+const jwtAuthenticated = require('../../middlewares/jwtAuthenticated');
 
 module.exports = {
-  login: (req, res) => {
-    res.render('auth/login');
-  },
-
-  loginPost: (req, res, next) => {
-    passport.authenticate('local', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/login',
-      failureFlash: true,
-    })(req, res, next);
-  },
-
-  logout: (req, res) => {
-    req.logout();
-    res.redirect('/login');
-  },
-
-  apiLogin: async (req, res, next) => {
+  login: async (req, res, next) => {
     passport.authenticate('local', async (err, user) => {
       if (err) {
         return next(err);
@@ -38,7 +21,7 @@ module.exports = {
     })(req, res, next);
   },
 
-  apiTest: [
+  test: [
     jwtAuthenticated,
     (req, res) => {
       res.json({ message: 'You are authenticated.' });
