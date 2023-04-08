@@ -5,37 +5,40 @@ block content
     .main-content
       .ui.grid.stackable.padded
         .ui.container-fluid.column
-          table.ui.celled.padded.table
-            thead
-              tr
-                th Id
-                th Username
-                th Email
-                th Role
-            tbody
-              each user in users
-                tr
-                  td #{user.id}
-                  td #{user.username}
-                  td #{user.email}
-                  td
-                    each role in user.roles
-                      .ui.label #{role.role}
-            tfoot
-              tr
-                th(colspan='5')
-                  .ui.large.green.labeled.icon.button(onclick='openAddUserModal()')
-                    i.plus.icon
-                    | Add User
-                  .ui.right.floated.pagination.menu
-                    a.icon.item
-                      i.left.chevron.icon
-                    a.item 1
-                    a.item 2
-                    a.item 3
-                    a.item 4
-                    a.icon.item
-                      i.right.chevron.icon
+          .ui.fluid.card
+            .content
+              .ui.right.floated.large.green.labeled.icon.button(onclick='openAddUserModal()')
+                i.plus.icon
+                | Add User
+              .header
+                .ui.header
+                  | Users
+              .meta
+                | Manage users
+            .content
+              table.ui.celled.padded.table
+                thead
+                  tr
+                    th Id
+                    th Username
+                    th Email
+                    th Role
+                    th Actions
+                tbody
+                  each user in users
+                    tr
+                      td #{user.id}
+                      td #{user.username}
+                      td #{user.email}
+                      td
+                        each role in user.roles
+                          .ui.label(class= role.role === 'ADMIN' ? 'violet' : 'teal') #{role.role}
+                      td
+                        .ui.icon.buttons
+                          a.ui.basic.button(href='/dashboard/users/' + user.id + '/edit')
+                            i.edit.icon
+                          a.ui.basic.button(href='/dashboard/users/' + user.id + '/delete')
+                            i.trash.icon
 
 block modal
   .ui.modal
@@ -68,6 +71,13 @@ block scripts
     }
 
     $(document).ready(function() {
+      // init datatable
+      $('table.ui.celled.padded.table').DataTable({
+        // order id column descending
+        order: [[0, 'desc']]
+      });
+
+
       $('#addUserButton').click(function(e) {
         e.stopPropagation();
         $.ajax({
@@ -87,18 +97,19 @@ block scripts
             });
             
             // add user to table
-            const table = $('table.ui.celled.padded.table');
-            const tbody = table.find('tbody');
-            const user = data.user;
-            const tr = $(`<tr>
-              <td>${user.id}</td>
-              <td>${user.username}</td>
-              <td>${user.email}</td>
-              <td>
-                <div class="ui label">${user.roles[0].role}</div>
-              </td>
-            </tr>`);
-            tbody.prepend(tr);
+            const table = $('table.ui.celled.padded.table').DataTable();
+            table.row.add([
+              data.user.id,
+              data.user.username,
+              data.user.email,
+              `<div class="ui label violet">ADMIN</div>`,
+              `
+                <div class="ui icon buttons">
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/edit"><i class="edit icon"></i></a>
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
+                </div>
+              `
+            ]).draw(false);
 
             // hide modal
             $('.ui.modal').modal('hide');

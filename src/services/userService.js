@@ -6,6 +6,13 @@ const db = require('../config/db');
 module.exports = {
   getAllUsersWithRoles: async () => {
     const users = await db.user.findMany({
+      where: {
+        roles: {
+          some: {
+            role: Role.ADMIN,
+          },
+        },
+      },
       include: {
         roles: true,
       },
