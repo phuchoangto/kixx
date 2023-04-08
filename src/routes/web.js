@@ -15,5 +15,6 @@ router.get('/dashboard', dashboardController.index);
 router.get('/dashboard/users', userController.manageUser);
 router.post('/dashboard/users', userController.addUser);
 router.get('/dashboard/users/:id', userController.getUserData);
+router.put('/dashboard/users/:id', userController.editUser);
 
 module.exports = router;

@@ -180,4 +180,60 @@ block scripts
           }
         });
       });
+
+      $('#editUserButton').click(function(e) {
+        e.stopPropagation();
+        // join roles with comma
+        $.ajax({
+          type: 'PUT',
+          url: '/dashboard/users/' + $('#editUserForm input[name="id"]').val(),
+          data: {
+            username: $('#editUserForm input[name="username"]').val(),
+            email: $('#editUserForm input[name="email"]').val(),
+            password: $('#editUserForm input[name="password"]').val(),
+            roles: $('#editUserForm select[name="roles"]').val().join(',')
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+
+            // update user in table
+            const table = $('table.ui.celled.padded.table').DataTable();
+            const tr = $(`tr[data-id=${data.user.id}]`);
+            const roles = data.user.roles.map(function(role) {
+              return `<div class="ui label ${role.role === 'ADMIN' ? 'violet' : 'teal'}">${role.role}</div>`;
+            }).join('');
+            table.row(tr).data([
+              data.user.id,
+              data.user.username,
+              data.user.email,
+              roles,
+              `
+                <div class="ui icon buttons">
+                  <a class="ui basic button" onclick="openEditUserModal(${data.user.id})"><i class="edit icon"></i></a>
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
+                </div>
+              `
+            ]).draw();
+
+            // hide modal
+            $('.ui.modal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#editUserErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
+
     });
