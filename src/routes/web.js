@@ -16,6 +16,6 @@ router.get('/dashboard', dashboardController.index);
 router.get('/dashboard/users', userController.manageUser);
 router.post('/dashboard/users', userController.addUser);
 router.get('/dashboard/events', eventController.manageEvent);
-// router.post('/dashboard/events', eventController.addEvent);
+router.post('/dashboard/events', eventController.addEvent);
 
 module.exports = router;
