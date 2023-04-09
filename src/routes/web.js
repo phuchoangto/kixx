@@ -20,6 +20,7 @@ router.post('/dashboard/users', userController.addUser);
 router.get('/dashboard/events', eventController.manageEvent);
 router.get('/dashboard/events/add', eventController.addEvent);
 router.post('/dashboard/events/add', eventController.addEventPost);
+// router.post('/dashboard/events/add/upload', eventController.upload);
 
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);

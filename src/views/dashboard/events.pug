@@ -19,7 +19,7 @@ block content
                 thead
                   tr
                     th Id
-                    th Name
+                    th Name 
                     th Description
                     th Date
                     th Image 
@@ -30,7 +30,7 @@ block content
                     tr
                       td #{event.id}
                       td #{event.name}
-                      td #{event.description}
+                      td #{event.description.replace(/(<([^>]+)>)/ig,"").split(' ').slice(0,50).join(' ')}
                       td
                         | #{event.start.toLocaleDateString('en-GB')} #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
                         br
@@ -45,45 +45,13 @@ block content
                           a.ui.basic.button(href='/dashboard/events/' + event.id + '/delete')
                             i.trash.icon
 
-block modal
-  .ui.modal
-    i.close.icon
-    .header
-      | Add Event
-    .content
-      form#addEventForm.ui.form(method='POST')
-        .field
-          label Event name
-          input(type='text' name='name' placeholder='Event name')
-        .field
-          label Description
-          input(type='text' name='description' placeholder='Description')
-        .field
-          label Start
-          input(type='date' name='start' placeholder='Start')
-          .field
-          label End
-          input(type='date' name='end' placeholder='End')
-          .field
-          label Image
-          input(type='text' name='imageUrl' placeholder='Image')
-          .field
-          label Faculty
-          input(type='number' name='facultyId' placeholder='Faculty')
-        #addEventErrors.ui.error.message
-    .actions
-      .ui.black.deny.button
-        | Nope
-      #addEventButton.ui.positive.right.labeled.icon.button
-        | Confirm
-        i.checkmark.icon
 
 block scripts
-  
   script.
+    
     //open add view
     function openAddEventView(){
       window.location.href = '/dashboard/events/add';
     }
 
-    
+

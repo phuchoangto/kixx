@@ -11,6 +11,8 @@
     "prettier:fix": "prettier --write src"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-cloud-services": "^37.0.1",
+    "@ckeditor/ckeditor5-easy-image": "^37.0.1",
     "@prisma/client": "^4.12.0",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
@@ -25,7 +27,8 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "striptags": "^3.2.0"
   },
   "devDependencies": {
     "eslint": "^8.37.0",
