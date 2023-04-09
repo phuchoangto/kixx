@@ -1,7 +1,13 @@
 const { Strategy: LocalStrategy } = require('passport-local');
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const db = require('./db');
+
+const jwtOpts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET || 'secret',
+};
 
 // Configure passport to use the local strategy
 passport.use(
@@ -34,6 +40,27 @@ passport.use(
       }
     },
   ),
+);
+
+// Configure passport to use the JWT strategy
+passport.use(
+  new JwtStrategy(jwtOpts, async (jwtPayload, done) => {
+    try {
+      const user = await db.user.findUnique({
+        where: {
+          id: jwtPayload.sub,
+        },
+      });
+
+      if (!user) {
+        return done(null, false, { message: 'User not found.' });
+      }
+
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  }),
 );
 
 // Serialize the user id to push into the session

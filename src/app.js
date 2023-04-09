@@ -8,6 +8,7 @@ const flash = require('connect-flash');
 
 const passport = require('./config/passport');
 const webRouter = require('./routes/web');
+const apiRouter = require('./routes/api');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/', webRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
