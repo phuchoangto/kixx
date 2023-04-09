@@ -35,6 +35,7 @@ module.exports = {
         if (error instanceof UserAlreadyExistsError) {
           return res.status(409).json({ errors: [{ msg: error.message }] });
         }
+        console.log(error);
         return res
           .status(500)
           .json({ errors: [{ msg: 'Internal server error' }] });

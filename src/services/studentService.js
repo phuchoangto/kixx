@@ -43,8 +43,18 @@ module.exports = {
     if (userExists.length > 0) {
       throw new UserAlreadyExistsError('User already exists');
     }
+
+    // check student id is unique
+    const studentExists = await db.student.findUnique({
+      where: {
+        id: parseInt(studentId, 10),
+      },
+    });
+    if (studentExists) {
+      throw new UserAlreadyExistsError('Student ID already exists');
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await db.user.create({
+    await db.user.create({
       data: {
         username,
         email,
@@ -54,25 +64,30 @@ module.exports = {
             role: Role.STUDENT,
           },
         },
+        student: {
+          create: {
+            id: parseInt(studentId, 10),
+            firstName,
+            lastName,
+            facultyId: parseInt(facultyId, 10),
+          },
+        },
       },
       include: {
         roles: true,
+        student: true,
       },
     });
-    // Create new student record
-    const newStudent = await db.student.create({
-      data: {
+
+    const newStudent = await db.student.findUnique({
+      where: {
         id: parseInt(studentId, 10),
-        firstName,
-        lastName,
-        facultyId: parseInt(facultyId, 10),
-        userId: newUser.id,
       },
       include: {
-        user: true,
         faculty: true,
       },
     });
+
     return newStudent;
   },
 };

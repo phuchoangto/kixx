@@ -34,7 +34,7 @@ block content
                       td #{student.faculty.name}                                         
                       td
                         each role in student.user.roles
-                          .ui.label(class= role.role === 'STUDENT' ? 'orange' : 'teal') #{role.role}
+                          .ui.label(class="teal") #{role.role}
                       td
                         .ui.icon.buttons
                           a.ui.basic.button(href='/dashboard/students/' + student.id + '/edit')
@@ -50,16 +50,16 @@ block modal
       form#addStudentForm.ui.form(method='POST')
         .field
           label Username
-          input(type='text', name='username', placeholder='Username')
+          input(type='text' name='username' placeholder='Username')
         .field
           label Email
-          input(type='email', name='email', placeholder='Email')
+          input(type='email' name='email' placeholder='Email')
         .field
           label Password
-          input(type='password', name='password', placeholder='Password') 
+          input(type='password' name='password' placeholder='Password') 
         .field
           label Student ID
-          input(type='text', name='id', placeholder='Student ID')
+          input(type='text' name='id' placeholder='Student ID')
         .field
           label Faculty
           select.ui.dropdown(name='facultyId')
@@ -67,10 +67,10 @@ block modal
               option(value=faculty.id, key=faculty.id) #{faculty.name}
         .field
           label Last Name 
-          input(type='text', name='lastName', placeholder='Last Name')
+          input(type='text' name='lastName' placeholder='Last Name')
         .field
           label First Name
-          input(type='text', name='firstName', placeholder='First Name')
+          input(type='text' name='firstName' placeholder='First Name')
         #addStudentErrors.ui.error.message
     .actions
       .ui.black.deny.button
@@ -105,7 +105,7 @@ block scripts
             email: $('#addStudentForm input[name="email"]').val(),
             password: $('#addStudentForm input[name="password"]').val(),
             id: $('#addStudentForm input[name="id"]').val(),
-             facultyId: selectedKey,
+              facultyId: selectedKey,
             lastName: $('#addStudentForm input[name="lastName"]').val(),
             firstName: $('#addStudentForm input[name="firstName"]').val(),
           },
@@ -116,7 +116,7 @@ block scripts
               message: data.message,
               position: 'topRight'
             });
-            
+
             // add student to table
             const table = $('table.ui.celled.padded.table').DataTable();
             table.row.add([
@@ -124,13 +124,13 @@ block scripts
               data.student.lastName,
               data.student.firstName,
               data.student.faculty.name,
-              `<div class="ui label violet">STUDENT</div>`,
+              `<div class="ui label teal">STUDENT</div>`,
               `
               <div class="ui icon buttons">
-                 <a class="ui basic button" href="/dashboard/students/${data.student.id}/edit"><i class="edit icon"></i></a>
-                 <a class="ui basic button" href="/dashboard/students/${data.student.id}/delete"><i class="trash icon"></i></a>
-               </div>
-               `
+                <a class="ui basic button" href="/dashboard/students/${data.student.id}/edit"><i class="edit icon"></i></a>
+                <a class="ui basic button" href="/dashboard/students/${data.student.id}/delete"><i class="trash icon"></i></a>
+</div>
+`
             ]).draw(false);
 
             // hide modal
