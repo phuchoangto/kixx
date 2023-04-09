@@ -31,15 +31,14 @@ model UserRoles {
 }
 
 model Student {
-  id Int @id
-
+  id Int @id 
   firstName String?
   lastName  String?
-  facultyId Int?
 
   userId Int  @unique
   user   User @relation(fields: [userId], references: [id])
 
+  facultyId Int?
   faculty Faculty? @relation(fields: [facultyId], references: [id])
 
   checkIns EventCheckIn[]
