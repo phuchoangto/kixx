@@ -20,8 +20,8 @@ block content
                   tr
                     th Id
                     th Name
-                    th Description
-                    th Date
+                    th Start
+                    th End
                     th Image 
                     th Faculty
                     th Actions
@@ -30,13 +30,12 @@ block content
                     tr
                       td #{event.id}
                       td #{event.name}
-                      td #{event.description}
                       td
                         | #{event.start.toLocaleDateString('en-GB')} #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
-                        br
+                      td
                         | #{event.end.toLocaleDateString('en-GB')} #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       td 
-                        img(src=`${event.imageUrl}`)
+                        img(src=`${event.imageUrl}` style='max-width: 100px;' alt='Event Image')
                       td #{event.faculty.name}
                       td
                         .ui.icon.buttons
@@ -44,3 +43,10 @@ block content
                             i.edit.icon
                           a.ui.basic.button(href='/dashboard/events/' + event.id + '/delete')
                             i.trash.icon
+
+block scripts
+  script.
+    // init data table
+    $('.ui.celled.padded.table').DataTable({
+      "order": [[ 0, "desc" ]]
+    });
