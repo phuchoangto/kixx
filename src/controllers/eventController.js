@@ -9,8 +9,12 @@ module.exports = {
     const events = await eventService.getAllEvents();
     return res.render('dashboard/events', { title: 'Manage Events', events });
   },
-  manageAddEvent: async (req, res) => res.render('dashboard/addEvent', { title: 'Add Events' }),
-  addEvent: [
+
+  addEvent: async (req, res) => {
+    return res.render('dashboard/addEvent', { title: 'Add Event' });
+  },
+
+  addEventPost: [
     addEventValidator,
     async (req, res) => {
       const errors = validationResult(req);
@@ -24,17 +28,21 @@ module.exports = {
 
       try {
         // eslint-disable-next-line max-len
-        const event = await eventService.addEvent(name, description, start, end, imageUrl, facultyId);
+        const event = await eventService.addEvent(
+          name,
+          description,
+          start,
+          end,
+          imageUrl,
+          facultyId,
+        );
         return res.json({ event, message: 'Event added successfully' });
       } catch (error) {
         if (error instanceof EventAlreadyExistsError) {
           return res.status(409).json({ errors: [{ msg: error.message }] });
         }
-        return res
-          .status(500)
-          .json({ errors: [{ msg: error.message }] });
+        return res.status(500).json({ errors: [{ msg: error.message }] });
       }
     },
-
   ],
 };
