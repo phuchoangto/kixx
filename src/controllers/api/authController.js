@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const passport = require('../../config/passport');
+const userService = require('../../services/userService');
 const jwtAuthenticated = require('../../middlewares/jwtAuthenticated');
 
 module.exports = {
@@ -13,11 +14,14 @@ module.exports = {
         return res.status(401).json({ message: 'Authentication failed.' });
       }
 
+      const userInDB = await userService.getUserWithRoles(user.id);
+      const roles = userInDB.roles.map((role) => role.role);
+
       const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
+        expiresIn: '24h',
       });
 
-      return res.json({ token });
+      return res.json({ user: { ...user, roles, token } });
     })(req, res, next);
   },
 

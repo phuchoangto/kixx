@@ -21,6 +21,18 @@ module.exports = {
     return users;
   },
 
+  getUserWithRoles: async (id) => {
+    const user = await db.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        roles: true,
+      },
+    });
+    return user;
+  },
+
   addUser: async (username, email, password) => {
     // check if user already exists
     const userExists = await db.user.findMany({
