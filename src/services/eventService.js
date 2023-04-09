@@ -10,6 +10,9 @@ module.exports = {
           gte: new Date(),
         },
       },
+      include: {
+        faculty: true,
+      },
     });
     return events;
   },
