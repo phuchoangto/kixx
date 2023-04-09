@@ -24,63 +24,33 @@ html(lang="en")
         .header
           | Administration
         .menu
-          a.item
-            div
-              i.cogs.icon
-              | Settings
-          a.item
+          a.item(href='/dashboard/students')
             div
               i.users.icon
-              | Team
-      a.item(href='#')
-        div
-          i.icon.chart.line
-          |             Charts
-      a.item
-        div
-          i.icon.lightbulb
-          |             Apps
-      .item
-        .header Other
-        .menu
-          a.item(href='#')
+              | Manage Students
+          a.item(href='/dashboard/users')
             div
-              i.icon.envelope
-              |                     Messages
-          a.item(href='#')
+              i.user.icon
+              | Manage Users
+          a.item(href='/dashboard/events')
             div
-              i.icon.calendar.alternate
-              |                     Calendar
-      .item
-        form(action='#')
-          .ui.mini.action.input
-            input(type='text' placeholder='Search...')
-            button.ui.mini.icon.button
-              i.search.icon
-      .ui.segment.inverted
-        .ui.tiny.olive.inverted.progress
-          .bar(style='width: 54%;')
-          .label Monthly Bandwidth
-        .ui.tiny.teal.inverted.progress
-          .bar(style='width: 78%;')
-          .label Disk Usage
+              i.calendar.icon
+              | Manage Events
 
     nav.ui.top.fixed.inverted.menu
       .left.menu
         a.sidebar-menu-toggler.item(href='#' data-target='#sidebar')
           i.sidebar.icon
         a.header.item(href='#')
-          | Semantic UI
+          | KIXX
       .right.menu
         a.item(href='#')
           i.bell.icon
         .ui.dropdown.item
           i.user.cirlce.icon
           .menu
-            a.item(href='#')
-              i.info.circle.icon
-              |  Profile
-            a.item(href='#')
+            // a open change password modal
+            a.item(onclick="$('#changePasswordModal').modal('show')")
               i.wrench.icon
               |                     Settings
             a.item(href='#')
@@ -88,6 +58,28 @@ html(lang="en")
               |                     Logout
 
     block content
+    #changePasswordModal.ui.modal
+      i.close.icon
+      .header
+        | Change password
+      .content
+        form#changePasswordForm.ui.form(method='POST')
+          .field
+            label Old Password
+            input(type='password' name='oldPassword' placeholder='Old Password')
+          .field
+            label Password
+            input(type='password' name='newPassword' placeholder='Password')
+          .field
+            label Confirm Password
+            input(type='password' name='confirmPassword' placeholder='Confirm Password')
+          #changePasswordErrors.ui.error.message
+      .actions
+        .ui.black.deny.button
+          | Nope
+        #changePasswordButton.ui.positive.right.labeled.icon.button
+          | Yep, that's me
+          i.checkmark.icon
     block modal
     script(src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
     script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js")
@@ -95,4 +87,41 @@ html(lang="en")
     script(src="https://cdn.datatables.net/v/se/dt-1.13.4/datatables.min.js") 
     script(src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js") 
     script(src="/js/dashboard.js") 
+    script.
+      $(document).ready(function() {
+        $('#changePasswordButton').click(function(e) {
+          e.stopPropagation();
+          $('#changePasswordButton').addClass('loading');
+          console.log($('#changePasswordForm input[name="oldPassword"]').val());
+          $.ajax({
+            url: '/dashboard/change-password',
+            type: 'POST',
+            data: {
+              oldPassword: $('#changePasswordForm input[name="oldPassword"]').val(),
+              newPassword: $('#changePasswordForm input[name="newPassword"]').val(),
+              confirmPassword: $('#changePasswordForm input[name="confirmPassword"]').val()
+            },
+            success: function(data) {
+              $('#changePasswordButton').removeClass('loading');
+              $('#changePasswordModal').modal('hide');
+              iziToast.success({
+                title: 'Success',
+                message: 'Password changed successfully',
+                position: 'topRight'
+              });
+            },
+            error: function(err) {
+              $('#changePasswordButton').removeClass('loading');
+              $('#changePasswordErrors').html('');
+              $('#changePasswordErrors').append('<div class="header">There were some errors with your submission</div>');
+              $('#changePasswordErrors').append('<ul class="list">');
+              err.responseJSON.errors.forEach(function(error) {
+                $('#changePasswordErrors').append('<li>' + error.msg + '</li>');
+              });
+              $('#changePasswordErrors').append('</ul>');
+              $('#changePasswordErrors').show();
+            }
+          });
+        });
+      });
     block scripts

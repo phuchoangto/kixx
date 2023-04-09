@@ -5,6 +5,30 @@ const UserNotFoundError = require('../errors/userNotFoundError');
 const db = require('../config/db');
 
 module.exports = {
+  changePassword: async (id, oldPassword, newPassword) => {
+    const user = await db.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      throw new UserNotFoundError('User not found');
+    }
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      throw new Error('Old password is incorrect');
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.user.update({
+      where: {
+        id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+  },
+
   getAllUsersWithRoles: async () => {
     const users = await db.user.findMany({
       where: {

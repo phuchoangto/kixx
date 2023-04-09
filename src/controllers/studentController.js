@@ -1,8 +1,8 @@
 const { validationResult } = require('express-validator');
 const facultyService = require('../services/facultyService');
 const studentService = require('../services/studentService');
-const { addUserValidator } = require('../validator/addUserValidator');
-const { addStudentValidator } = require('../validator/addStudentValidator');
+const { addUserValidator } = require('../validators/addUserValidator');
+const { addStudentValidator } = require('../validators/addStudentValidator');
 const UserAlreadyExistsError = require('../errors/userAlreadyExistsError');
 
 module.exports = {

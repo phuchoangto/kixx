@@ -13,6 +13,8 @@ router.get('/login', authController.login);
 router.post('/login', authController.loginPost);
 
 router.get('/dashboard', dashboardController.index);
+router.post('/dashboard/change-password', dashboardController.changePassword);
+
 router.get('/dashboard/users', userController.manageUser);
 router.post('/dashboard/users', userController.addUser);
 router.get('/dashboard/users/:id', userController.getUserData);

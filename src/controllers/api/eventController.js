@@ -3,7 +3,7 @@ const jwtAuthenticated = require('../../middlewares/jwtAuthenticated');
 const eventService = require('../../services/eventService');
 const EventNotFoundError = require('../../errors/eventNotFoundError');
 const StudentNotFoundError = require('../../errors/studentNotFoundError');
-const { checkInValidator } = require('../../validator/checkInValidator');
+const { checkInValidator } = require('../../validators/checkInValidator');
 
 module.exports = {
   getUpcomingEvents: [

@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator');
 const userService = require('../services/userService');
-const { addUserValidator } = require('../validator/addUserValidator');
-const { editUserValidator } = require('../validator/editUserValidator');
+const { addUserValidator } = require('../validators/addUserValidator');
+const { editUserValidator } = require('../validators/editUserValidator');
 const UserAlreadyExistsError = require('../errors/userAlreadyExistsError');
 const UserNotFoundError = require('../errors/userNotFoundError');
 
