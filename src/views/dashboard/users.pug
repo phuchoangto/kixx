@@ -1,0 +1,236 @@
+extends ../layout/dashboard
+
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          .ui.fluid.card
+            .content
+              .ui.right.floated.large.green.labeled.icon.button(onclick='openAddUserModal()')
+                i.plus.icon
+                | Add User
+              .header
+                .ui.header
+                  | Users
+              .meta
+                | Manage users
+            .content
+              table.ui.celled.padded.table
+                thead
+                  tr
+                    th Id
+                    th Username
+                    th Email
+                    th Role
+                    th Actions
+                tbody
+                  each user in users
+                    tr(data-id= user.id)
+                      td #{user.id}
+                      td #{user.username}
+                      td #{user.email}
+                      td
+                        each role in user.roles
+                          .ui.label(class= role.role === 'ADMIN' ? 'violet' : 'teal') #{role.role}
+                      td
+                        .ui.icon.buttons
+                          a.ui.basic.button(onclick=`openEditUserModal(${user.id})`)
+                            i.edit.icon
+                          a.ui.basic.button(href='/dashboard/users/' + user.id + '/delete')
+                            i.trash.icon
+
+block modal
+  #addUserModal.ui.modal
+    i.close.icon
+    .header
+      | Add User
+    .content
+      form#addUserForm.ui.form(method='POST')
+        .field
+          label Username
+          input(type='text' name='username' placeholder='Username')
+        .field
+          label Email
+          input(type='email' name='email' placeholder='Email')
+        .field
+          label Password
+          input(type='password' name='password' placeholder='Password')
+        #addUserErrors.ui.error.message
+    .actions
+      .ui.black.deny.button
+        | Nope
+      #addUserButton.ui.positive.right.labeled.icon.button
+        | Yep, that's me
+        i.checkmark.icon
+
+  #editUserModal.ui.modal
+    i.close.icon
+    .header
+      | Edit User
+    .content
+      form#editUserForm.ui.form(method='POST')
+        input(type='hidden' name='id')
+        .field
+          label Username
+          input(type='text' name='username' placeholder='Username')
+        .field
+          label Email
+          input(type='email' name='email' placeholder='Email')
+        .field
+          label Roles
+          select.multiple.dropdown(name='roles' multiple)
+            option(value="ADMIN") ADMIN
+            option(value="STUDENT") STUDENT
+        #editUserErrors.ui.error.message
+    .actions
+      .ui.black.deny.button
+        | Nope
+      #editUserButton.ui.positive.right.labeled.icon.button
+        | Yep, that's me
+        i.checkmark.icon
+
+block scripts
+  script.
+    function openAddUserModal() {
+      $('#addUserModal').modal('show');
+    }
+
+    function openEditUserModal(id) {
+      $.ajax({
+        type: 'GET',
+        url: '/dashboard/users/' + id,
+        success: function(data) {
+          console.log(data);
+          $('#editUserModal input[name="id"]').val(data.user.id);
+          $('#editUserModal input[name="username"]').val(data.user.username);
+          $('#editUserModal input[name="email"]').val(data.user.email);
+          $('#editUserModal').modal('show');
+        },
+        error: function(data) {
+          iziToast.error({
+            title: 'Error',
+            message: data.responseJSON.message,
+            position: 'topRight'
+          });
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      // init datatable
+      $('table.ui.celled.padded.table').DataTable({
+        // order id column descending
+        order: [[0, 'desc']]
+      });
+
+      // init selectize
+      $('select.multiple.dropdown').selectize({
+        plugins: ['remove_button']
+      });
+
+      $('#addUserButton').click(function(e) {
+        e.stopPropagation();
+        $.ajax({
+          type: 'POST',
+          url: '/dashboard/users',
+          data: {
+            username: $('#addUserForm input[name="username"]').val(),
+            email: $('#addUserForm input[name="email"]').val(),
+            password: $('#addUserForm input[name="password"]').val()  
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+            
+            // add user to table
+            const table = $('table.ui.celled.padded.table').DataTable();
+            table.row.add([
+              data.user.id,
+              data.user.username,
+              data.user.email,
+              `<div class="ui label violet">ADMIN</div>`,
+              `
+                <div class="ui icon buttons">
+                  <a class="ui basic button" onclick="openEditUserModal(${data.user.id})"><i class="edit icon"></i></a>
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
+                </div>
+              `
+            ]).draw(false);
+
+            // hide modal
+            $('.ui.modal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#addUserErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
+
+      $('#editUserButton').click(function(e) {
+        e.stopPropagation();
+        // join roles with comma
+        $.ajax({
+          type: 'PUT',
+          url: '/dashboard/users/' + $('#editUserForm input[name="id"]').val(),
+          data: {
+            username: $('#editUserForm input[name="username"]').val(),
+            email: $('#editUserForm input[name="email"]').val(),
+            password: $('#editUserForm input[name="password"]').val(),
+            roles: $('#editUserForm select[name="roles"]').val().join(',')
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+
+            // update user in table
+            const table = $('table.ui.celled.padded.table').DataTable();
+            const tr = $(`tr[data-id=${data.user.id}]`);
+            const roles = data.user.roles.map(function(role) {
+              return `<div class="ui label ${role.role === 'ADMIN' ? 'violet' : 'teal'}">${role.role}</div>`;
+            }).join('');
+            table.row(tr).data([
+              data.user.id,
+              data.user.username,
+              data.user.email,
+              roles,
+              `
+                <div class="ui icon buttons">
+                  <a class="ui basic button" onclick="openEditUserModal(${data.user.id})"><i class="edit icon"></i></a>
+                  <a class="ui basic button" href="/dashboard/users/${data.user.id}/delete"><i class="trash icon"></i></a>
+                </div>
+              `
+            ]).draw();
+
+            // hide modal
+            $('.ui.modal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#editUserErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
+
+    });
