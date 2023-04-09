@@ -6,7 +6,7 @@ block content
         .ui.container-fluid.column
           .ui.fluid.card
             .content
-              .ui.right.floated.large.green.labeled.icon.button(onclick='openAddEventModal()')
+              .ui.right.floated.large.green.labeled.icon.button(onclick='openAddEventView()')
                 i.plus.icon
                 | Add Event
               .header
@@ -81,49 +81,9 @@ block modal
 block scripts
   
   script.
-    function openAddEventModal() {
-      $('.ui.modal').modal('show');
+    //open add view
+    function openAddEventView(){
+      window.location.href = '/dashboard/events/add';
     }
 
-    $(document).ready(function() {
-      
-      $('table.ui.celled.padded.table').DataTable({
-        // order id column descending
-        order: [[0, 'desc']]
-      });
-      $('#addEventButton').click(function(e) {
-        e.stopPropagation();
-        $.ajax({
-          type: 'POST',
-          url: '/dashboard/events',
-          data: {
-            name: $('#addEventForm input[name="name"]').val(),
-            description: $('#addEventForm input[name="description"]').val(),
-            start: $('#addEventForm input[name="start"]').val(),
-            end: $('#addEventForm input[name="end"]').val(),
-            imageUrl: $('#addEventForm input[name="imageUrl"]').val(),
-            facultyId: $('#addEventForm input[name="facultyId"]').val()
-          },
-          success: function(data) {
-            console.log(data);
-            iziToast.success({
-              title: 'Success',
-              message: data.message,
-              position: 'topRight'
-            });
-            $('.ui.modal').modal('hide');
-            window.location.reload();
-          },
-          error: function(data) {
-            console.log(data);
-            const errors = data.responseJSON.errors;
-            const errorList = $('#addEventErrors');
-            errorList.empty();
-            errors.forEach(function(error) {
-              errorList.append(`<li>${error.msg}</li>`);
-            });
-            errorList.show();
-          }
-        });
-      });
-    });
+    

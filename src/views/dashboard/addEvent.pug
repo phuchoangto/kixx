@@ -1,0 +1,74 @@
+extends ../layout/dashboard
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          .ui.fluid.card
+            .content
+              form#addEventForm.ui.form(method='POST')
+                .field
+                label Event name
+                input(type='text' name='name' placeholder='Event name')
+                .field
+                label Description
+                input(type='text' name='description' placeholder='Description')
+                .field
+                label Start
+                input(type='date' name='start' placeholder='Start')
+                .field
+                label End
+                input(type='date' name='end' placeholder='End')
+                .field
+                label Image
+                input(type='text' name='imageUrl' placeholder='Image')
+                .field
+                label Faculty
+                input(type='number' name='facultyId' placeholder='Faculty')
+                #addEventErrors.ui.error.message
+            .actions
+                #addEventButton.ui.right.floated.large.green.labeled.icon.button
+                    | Confirm
+                    i.checkmark.icon
+                .ui.right.floated.large.black.deny.button
+                    | Nope
+                
+                
+block scripts
+    script.
+        $(document).ready(function() {
+        $('#addEventButton').click(function(e) {
+            $.ajax({
+            type: 'POST',
+            url: '/dashboard/events/add',
+            data: {
+                name: $('#addEventForm input[name="name"]').val(),
+                description: $('#addEventForm input[name="description"]').val(),
+                start: $('#addEventForm input[name="start"]').val(),
+                end: $('#addEventForm input[name="end"]').val(),
+                imageUrl: $('#addEventForm input[name="imageUrl"]').val(),
+                facultyId: $('#addEventForm input[name="facultyId"]').val()
+            },
+            success: function(data) {
+                console.log(data);
+                iziToast.success({
+                title: 'Success',
+                message: data.message,
+                position: 'topRight'
+                });
+                $('.ui.modal').modal('hide');
+                window.location.href = '/dashboard/events';
+            },
+            error: function(data) {
+                console.log(data);
+                const errors = data.responseJSON.errors;
+                const errorList = $('#addEventErrors');
+                errorList.empty();
+                errors.forEach(function(error) {
+                errorList.append(`<li>${error.msg}</li>`);
+                });
+                errorList.show();
+            }
+            });
+        });
+        });

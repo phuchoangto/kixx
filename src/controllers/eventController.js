@@ -9,7 +9,7 @@ module.exports = {
     const events = await eventService.getAllEvents();
     return res.render('dashboard/events', { title: 'Manage Events', events });
   },
-
+  manageAddEvent: async (req, res) => res.render('dashboard/addEvent', { title: 'Add Events' }),
   addEvent: [
     addEventValidator,
     async (req, res) => {
