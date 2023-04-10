@@ -1,18 +1,18 @@
 const { validationResult } = require('express-validator');
-const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+const isAdmin = require('../middlewares/isAdmin');
 const { changePasswordValidator } = require('../validators/changePasswordValidator');
 const userService = require('../services/userService');
 
 module.exports = {
   index: [
-    ensureAuthenticated,
+    isAdmin,
     (req, res) => {
       res.render('dashboard', { title: 'Dashboard' });
     },
   ],
 
   changePassword: [
-    ensureAuthenticated,
+    isAdmin,
     changePasswordValidator,
     async (req, res) => {
       const errors = validationResult(req);

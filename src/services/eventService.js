@@ -49,6 +49,34 @@ module.exports = {
     return events;
   },
 
+  getUpComingEventsPagination: async (page, limit) => {
+    const events = await db.event.findMany({
+      where: {
+        start: {
+          gte: new Date(),
+        },
+        isArchived: false,
+      },
+      include: {
+        faculty: true,
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    const total = await db.event.count({
+      where: {
+        start: {
+          gte: new Date(),
+        },
+        isArchived: false,
+      },
+    });
+    return {
+      events,
+      total,
+    };
+  },
+
   checkIn: async (eventId, studentId) => {
     const event = await db.event.findUnique({
       where: {

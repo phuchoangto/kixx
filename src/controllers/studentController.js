@@ -4,17 +4,21 @@ const studentService = require('../services/studentService');
 const { addUserValidator } = require('../validators/addUserValidator');
 const { addStudentValidator } = require('../validators/addStudentValidator');
 const UserAlreadyExistsError = require('../errors/userAlreadyExistsError');
+const isAdmin = require('../middlewares/isAdmin');
 
 module.exports = {
-  manageStudent: async (req, res) => {
-    const faculties = await facultyService.getAllFaculties();
-    const students = await studentService.getAllStudentsWithRoles();
-    res.render('dashboard/students', {
-      title: 'Manage Students',
-      students,
-      faculties,
-    });
-  },
+  manageStudent: [
+    isAdmin,
+    async (req, res) => {
+      const faculties = await facultyService.getAllFaculties();
+      const students = await studentService.getAllStudentsWithRoles();
+      res.render('dashboard/students', {
+        title: 'Manage Students',
+        students,
+        faculties,
+      });
+    },
+  ],
 
   addStudent: [
     addUserValidator,

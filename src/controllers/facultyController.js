@@ -2,15 +2,19 @@ const { validationResult } = require('express-validator');
 const facultyService = require('../services/facultyService');
 const { addFacultyValidator } = require('../validators/addFacultyValidator');
 const FacultyAlreadyExistsError = require('../errors/facultyAlreadyExistsError');
+const isAdmin = require('../middlewares/isAdmin');
 
 module.exports = {
-  manageFaculty: async (req, res) => {
-    const faculties = await facultyService.getAllFaculties();
-    res.render('dashboard/faculties', {
-      title: 'Manage Faculty',
-      faculties,
-    });
-  },
+  manageFaculty: [
+    isAdmin,
+    async (req, res) => {
+      const faculties = await facultyService.getAllFaculties();
+      res.render('dashboard/faculties', {
+        title: 'Manage Faculty',
+        faculties,
+      });
+    },
+  ],
   addFaculty: [
     addFacultyValidator,
     async (req, res) => {

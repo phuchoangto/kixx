@@ -4,12 +4,16 @@ const { addUserValidator } = require('../validators/addUserValidator');
 const { editUserValidator } = require('../validators/editUserValidator');
 const UserAlreadyExistsError = require('../errors/userAlreadyExistsError');
 const UserNotFoundError = require('../errors/userNotFoundError');
+const isAdmin = require('../middlewares/isAdmin');
 
 module.exports = {
-  manageUser: async (req, res) => {
-    const users = await userService.getAllUsersWithRoles();
-    return res.render('dashboard/users', { title: 'Manage Users', users });
-  },
+  manageUser: [
+    isAdmin,
+    async (req, res) => {
+      const users = await userService.getAllUsersWithRoles();
+      return res.render('dashboard/users', { title: 'Manage Users', users });
+    },
+  ],
 
   addUser: [
     addUserValidator,

@@ -23,3 +23,8 @@ block content
                   .extra.content
                     span.right.floated
                       | #{Math.floor((event.start - new Date()) / 1000 / 60 / 60 / 24)} days left
+
+      .ui.menu.pagination(style='margin-left: 12px; margin-bottom: 12px;')
+        // loop 1 to pagination.pages
+        each page in Array.from({length: pagination.pages}, (v, k) => k + 1)
+          a.item(href=`/?page=${page}` class=page == pagination.page ? 'active' : '')= page

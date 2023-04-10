@@ -2,8 +2,19 @@ const eventService = require('../services/eventService');
 
 module.exports = {
   index: async (req, res) => {
-    const events = await eventService.getUpComingEvents();
-    return res.render('home/index', { title: 'Manage Events', events });
+    const page = req.query.page || 1;
+    const limit = 8;
+    const { events, total } = await eventService.getUpComingEventsPagination(
+      page,
+      limit,
+    );
+    const pages = Math.ceil(total / limit);
+    const pagination = {
+      page,
+      pages,
+    };
+    console.log(pagination);
+    return res.render('home/index', { title: 'Manage Events', events, pagination });
   },
   details: async (req, res) => {
     const { id } = req.params;

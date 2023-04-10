@@ -4,13 +4,17 @@ const facultyService = require('../services/facultyService');
 const { addEventValidator } = require('../validators/addEventValidator');
 const EventAlreadyExistsError = require('../errors/eventAlreadyExistsError');
 const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+const isAdmin = require('../middlewares/isAdmin');
 const upload = require('../config/upload');
 
 module.exports = {
-  manageEvent: async (req, res) => {
-    const events = await eventService.getAllEvents();
-    return res.render('dashboard/events', { title: 'Manage Events', events });
-  },
+  manageEvent: [
+    isAdmin,
+    async (req, res) => {
+      const events = await eventService.getAllEvents();
+      return res.render('dashboard/events', { title: 'Manage Events', events });
+    },
+  ],
 
   addEvent: async (req, res) => {
     const faculties = await facultyService.getAllFaculties();
