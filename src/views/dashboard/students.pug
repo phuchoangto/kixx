@@ -187,7 +187,8 @@ block scripts
                   <a class="ui basic button" href="/dashboard/students/${data.student.id}/delete"><i class="trash icon"></i></a>
                 </div>
               `
-            ]).draw(false);
+            ]).draw();
+            tr.attr('data-id', data.student.id);
             $('#editStudentModal').modal('hide');
           },
           error: function(data) {
