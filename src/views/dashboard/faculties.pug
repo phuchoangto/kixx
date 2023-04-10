@@ -51,22 +51,6 @@ block modal
       #addFacultyButton.ui.positive.right.labeled.icon.button
         | Yep, that's me
         i.checkmark.icon 
-    .ui.modal#editFacultyModal
-    i.close.icon
-    .header
-      | Edit Faculty
-    .content
-      form#addFacultyForm.ui.form(method='POST')
-        .field
-          label Name
-          input(type='text' name='edit_name' placeholder='Faculty name')
-        #addFacultyErrors.ui.error.message
-    .actions
-      .ui.black.deny.button
-        | Nope
-      #addFacultyButton.ui.positive.right.labeled.icon.button
-        | Yep, that's me
-        i.checkmark.icon 
 
 
 
