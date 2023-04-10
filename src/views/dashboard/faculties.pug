@@ -1,0 +1,130 @@
+extends ../layout/dashboard
+
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          .ui.fluid.card
+            .content
+              .ui.right.floated.large.green.labeled.icon.button(onclick='openAddFacultyModal()')
+                i.plus.icon
+                | Add Faculty
+              .header
+                .ui.header
+                  | Faculties
+              .meta
+                | Manage faculties
+            .content
+              table.ui.celled.padded.table
+                thead
+                  tr
+                    th Id
+                    th Name
+                    th Actions
+                tbody
+                  each faculty in faculties
+                    tr(data-id= faculty.id)
+                      td #{faculty.id}
+                      td #{faculty.name}      
+                      td   
+                        .ui.icon.buttons 
+                          .ui.basic.button(onclick=`showEdit(${faculty.id})`)
+                            i.edit.icon
+                          ui.basic.button(href=`/dashboard/faculties/${faculty.id}/delete`)
+                            i.trash.icon
+
+block modal
+  .ui.modal#addFacultyModal
+    i.close.icon
+    .header
+      | Add Faculty
+    .content
+      form#addFacultyForm.ui.form(method='POST')
+        .field
+          label Name
+          input(type='text' name='name' placeholder='Faculty name')
+        #addFacultyErrors.ui.error.message
+    .actions
+      .ui.black.deny.button
+        | Nope
+      #addFacultyButton.ui.positive.right.labeled.icon.button
+        | Yep, that's me
+        i.checkmark.icon 
+    .ui.modal#editFacultyModal
+    i.close.icon
+    .header
+      | Edit Faculty
+    .content
+      form#addFacultyForm.ui.form(method='POST')
+        .field
+          label Name
+          input(type='text' name='edit_name' placeholder='Faculty name')
+        #addFacultyErrors.ui.error.message
+    .actions
+      .ui.black.deny.button
+        | Nope
+      #addFacultyButton.ui.positive.right.labeled.icon.button
+        | Yep, that's me
+        i.checkmark.icon 
+
+
+
+block scripts
+  script.
+    function openAddFacultyModal() {
+        $('#addFacultyModal').modal('show');
+        }
+    $(document).ready(function() {
+      // init datatable
+      $('table.ui.celled.padded.table').DataTable({
+        // order id column descending
+        order: [[0, 'desc']]
+      });
+    
+      $('#addFacultyButton').click(function(e) {
+        e.stopPropagation();
+        $.ajax({
+          type: 'POST',
+          url: '/dashboard/faculties',
+          data: {
+            name: $('#addFacultyForm input[name="name"]').val(),
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+
+            const table = $('table.ui.celled.padded.table').DataTable();
+            table.row.add([
+                data.faculty.id,
+                data.faculty.name,
+                `
+                <div class="ui icon buttons">
+                    <a class="ui basic button" href="/dashboard/faculties/${data.faculty.id}/edit"><i class="edit icon"></i></a>
+                    <a class="ui basic button" href="/dashboard/faculties/${data.faculty.id}/delete"><i class="trash icon"></i></a>
+                </div>
+                `
+            ]).draw(false);
+
+            // hide modal
+            $('.ui.modal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#addFacultyErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
+
+
+    });

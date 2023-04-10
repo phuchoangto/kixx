@@ -5,6 +5,7 @@ const dashboardController = require('../controllers/dashboardController');
 const userController = require('../controllers/userController');
 const eventController = require('../controllers/eventController');
 const studentController = require('../controllers/studentController');
+const facultyController = require('../controllers/facultyController');
 
 const router = express.Router();
 
@@ -42,4 +43,6 @@ router.put('/dashboard/students/:id', studentController.editStudent);
 
 router.get('/certificates/:eventId', eventController.getCertificate);
 
+router.get('/dashboard/faculties', facultyController.manageFaculty);
+router.post('/dashboard/faculties', facultyController.addFaculty);
 module.exports = router;
