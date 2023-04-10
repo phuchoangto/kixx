@@ -2,8 +2,9 @@
 const { validationResult } = require('express-validator');
 const eventService = require('../services/eventService');
 const facultyService = require('../services/facultyService');
-const { addEventValidator } = require('../validator/addEventValidator');
+const { addEventValidator } = require('../validators/addEventValidator');
 const EventAlreadyExistsError = require('../errors/eventAlreadyExistsError');
+const upload = require('../config/upload');
 
 module.exports = {
   manageEvent: async (req, res) => {
@@ -17,6 +18,7 @@ module.exports = {
   },
 
   addEventPost: [
+    upload.single('image'),
     addEventValidator,
     async (req, res) => {
       const errors = validationResult(req);
@@ -26,15 +28,20 @@ module.exports = {
           .json({ errors: errors.array(), message: 'Validation error' });
       }
 
+      if (!req.file) {
+        return res.status(400).json({ errors: [{ msg: 'Image is required' }] });
+      }
+
       const { name, description, start, end, imageUrl, facultyId } = req.body;
+      const image = req.file;
 
       try {
-        // eslint-disable-next-line max-len
         const event = await eventService.addEvent(
           name,
           description,
           start,
           end,
+          image,
           imageUrl,
           facultyId,
         );

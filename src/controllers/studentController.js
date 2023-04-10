@@ -1,15 +1,19 @@
 const { validationResult } = require('express-validator');
 const facultyService = require('../services/facultyService');
 const studentService = require('../services/studentService');
-const { addUserValidator } = require('../validator/addUserValidator');
-const { addStudentValidator } = require('../validator/addStudentValidator');
+const { addUserValidator } = require('../validators/addUserValidator');
+const { addStudentValidator } = require('../validators/addStudentValidator');
 const UserAlreadyExistsError = require('../errors/userAlreadyExistsError');
 
 module.exports = {
   manageStudent: async (req, res) => {
     const faculties = await facultyService.getAllFaculties();
     const students = await studentService.getAllStudentsWithRoles();
-    res.render('dashboard/students', { title: 'Manage Students', students, faculties });
+    res.render('dashboard/students', {
+      title: 'Manage Students',
+      students,
+      faculties,
+    });
   },
 
   addStudent: [
@@ -29,7 +33,15 @@ module.exports = {
 
       try {
         // eslint-disable-next-line max-len
-        const student = await studentService.addStudent(username, email, password, id, lastName, firstName, facultyId);
+        const student = await studentService.addStudent(
+          username,
+          email,
+          password,
+          id,
+          lastName,
+          firstName,
+          facultyId,
+        );
         return res.json({ student, message: 'Student added successfully' });
       } catch (error) {
         if (error instanceof UserAlreadyExistsError) {
