@@ -6,6 +6,34 @@ const EventNotFoundError = require('../errors/eventNotFoundError');
 const StudentNotFoundError = require('../errors/studentNotFoundError');
 
 module.exports = {
+  getAllCheckedInEvents: async (userId) => {
+    const user = await db.user.findUnique({
+      where: {
+        id: parseInt(userId, 10),
+      },
+      include: {
+        student: true,
+      },
+    });
+    if (!user) {
+      throw new StudentNotFoundError();
+    }
+    const checkIns = await db.eventCheckIn.findMany({
+      where: {
+        studentId: user.student.id,
+      },
+      include: {
+        event: {
+          include: {
+            faculty: true,
+          },
+        },
+      },
+    });
+    const events = checkIns.map((checkIn) => checkIn.event);
+    return events;
+  },
+
   getUpComingEvents: async () => {
     const events = await db.event.findMany({
       where: {

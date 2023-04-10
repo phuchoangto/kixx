@@ -12,9 +12,13 @@ html(lang="en")
     .ui.top.fixed.menu
       .item
         img(src='https://semantic-ui.com/images/logo.png' alt='logo')
-      a.item Features
-      a.item Testimonials
-      a.item Sign-in
+      a.item(href='/')
+        i.home.icon
+        | Home
+      a.item(href='/certificates')
+        i.certificate.icon
+        | Certificates
+
 
     block content
     script(src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")

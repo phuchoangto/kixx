@@ -8,7 +8,7 @@ block content
           .ui.link.cards
             each event in events
               .card(style='width: 300px;')
-                a(href=`/${event.id}`)
+                a(href=`/certificates/${event.id}`)
                   .image
                     img(src=`${event.imageUrl}` alt='logo' class='ui image fluid')
                   .content 

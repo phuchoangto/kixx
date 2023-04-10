@@ -80,6 +80,15 @@ module.exports = {
     },
   ],
 
+  getAllCertificates: [
+    ensureAuthenticated,
+    async (req, res) => {
+      const userId = req.user.id;
+      const events = await eventService.getAllCheckedInEvents(userId);
+      return res.render('home/certificates', { title: 'Manage Events', events });
+    },
+  ],
+
   editEvent: async (req, res) => {
     const { id } = req.params;
     const event = await eventService.getEventById(id);

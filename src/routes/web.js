@@ -9,7 +9,8 @@ const studentController = require('../controllers/studentController');
 const router = express.Router();
 
 router.get('/', homeController.index);
-router.get('/:id', homeController.detail);
+//router.get('/:id', homeController.detail);
+router.get('/certificates', eventController.getAllCertificates);
 
 router.get('/login', authController.login);
 router.post('/login', authController.loginPost);
@@ -36,6 +37,6 @@ router.get(
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);
 
-router.get('/events/:eventId/certificate', eventController.getCertificate);
+router.get('/certificates/:eventId', eventController.getCertificate);
 
 module.exports = router;
