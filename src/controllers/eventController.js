@@ -1,3 +1,4 @@
+const { validationResult } = require('express-validator');
 const eventService = require('../services/eventService');
 const facultyService = require('../services/facultyService');
 const { addEventValidator } = require('../validators/addEventValidator');
