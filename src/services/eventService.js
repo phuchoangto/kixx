@@ -1,8 +1,8 @@
+const converter = require('json-2-csv');
 const db = require('../config/db');
 const storageService = require('./storageService');
 const EventNotFoundError = require('../errors/eventNotFoundError');
 const StudentNotFoundError = require('../errors/studentNotFoundError');
-const converter = require('json-2-csv');
 
 module.exports = {
   getUpComingEvents: async () => {
