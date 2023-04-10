@@ -7,10 +7,10 @@ block content
         .ui.container-fluid.column
           .ui.link.cards
             each event in events
-              .card(style='width: 300px;')
-                a(href=`/${event.id}`)
+              .card(style='width: 300px; margin-right: 25px;')
+                a(href=`/events/${event.id}`)
                   .image
-                    img(src=`${event.imageUrl}` alt='logo' class='ui image fluid')
+                    img(src=`${event.imageUrl}` style='width:300px; height: 200px;' alt='logo' class='ui image fluid')
                   .content 
                     .header
                       h3(style='color: black') #{event.name} 
