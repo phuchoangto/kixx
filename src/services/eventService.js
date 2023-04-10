@@ -2,6 +2,7 @@ const db = require('../config/db');
 const storageService = require('./storageService');
 const EventNotFoundError = require('../errors/eventNotFoundError');
 const StudentNotFoundError = require('../errors/studentNotFoundError');
+const converter = require('json-2-csv');
 
 module.exports = {
   getUpComingEvents: async () => {
@@ -148,5 +149,50 @@ module.exports = {
       },
     });
     return updatedEvent;
+  },
+
+  getEventCheckIns: async (id) => {
+    const event = await db.event.findUnique({
+      where: {
+        id: parseInt(id, 10),
+      },
+      include: {
+        checkIns: {
+          include: {
+            student: true,
+            event: true,
+          },
+        },
+      },
+    });
+    return event.checkIns;
+  },
+
+  exportEventCheckIns: async (id) => {
+    const event = await db.event.findUnique({
+      where: {
+        id: parseInt(id, 10),
+      },
+      include: {
+        checkIns: {
+          include: {
+            student: true,
+            event: true,
+          },
+        },
+      },
+    });
+    const data = event.checkIns.map((checkIn) => {
+      const { student } = checkIn;
+      return {
+        id: student.id,
+        name: student.name,
+        date: checkIn.createdAt,
+      };
+    });
+
+    const csv = converter.json2csv(data);
+
+    return csv;
   },
 };

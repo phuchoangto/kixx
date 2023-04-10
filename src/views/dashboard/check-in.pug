@@ -7,11 +7,14 @@ block content
         .ui.container-fluid.column
           .ui.fluid.card
             .content
+              .ui.right.floated.large.green.labeled.icon.button(onclick='export()')
+                i.plus.icon
+                | Export to CSV
               .header
                 .ui.header
-                  | Students
+                  | #{event.name}
               .meta
-                | Manage students
+                | #{checkIns.length} students checked in
             .content
               table.ui.celled.padded.table
                 thead
@@ -19,22 +22,19 @@ block content
                     th Id
                     th Last Name
                     th First Name
-                    th Faculty
-                    th Role
-                    th Actions
                 tbody
-                  each student in students
+                  each checkIn in checkIns
                     tr
-                      td #{student.id}
-                      td #{student.lastName}
-                      td #{student.firstName}
-                      td #{student.faculty.name}                                         
-                      td
-                        each role in student.user.roles
-                          .ui.label(class="teal") #{role.role}
-                      td
-                        .ui.icon.buttons
-                          a.ui.basic.button(href='/dashboard/students/' + student.id + '/edit')
-                            i.edit.icon
-                          a.ui.basic.button(href='/dashboard/students/' + student.id + '/delete')
-                            i.trash.icon
+                      td #{checkIn.student.id}
+                      td #{checkIn.student.lastName}
+                      td #{checkIn.student.firstName}
+
+block scripts
+  script.
+    // init data table
+    var table = $('.ui.celled.padded.table').DataTable({
+      "order": [[ 0, "desc" ]],
+      buttons: [
+        'excel'
+      ]
+    });

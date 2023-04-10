@@ -104,12 +104,20 @@ module.exports = {
 
   checkInList: async (req, res) => {
     const { id } = req.params;
+    const checkIns = await eventService.getEventCheckIns(id);
     const event = await eventService.getEventById(id);
-    const students = await eventService.getStudentsByEventId(id);
     return res.render('dashboard/check-in', {
       title: 'Check In List',
+      checkIns,
       event,
-      students,
     });
+  },
+
+  exportCheckInList: async (req, res) => {
+    const { id } = req.params;
+    const csv = await eventService.exportEventCheckIns(id);
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="check-in.csv"');
+    res.send(csv);
   },
 };
