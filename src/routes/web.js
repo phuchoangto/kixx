@@ -9,6 +9,7 @@ const studentController = require('../controllers/studentController');
 const router = express.Router();
 
 router.get('/', homeController.index);
+router.get('/:id', homeController.detail);
 
 router.get('/login', authController.login);
 router.post('/login', authController.loginPost);
