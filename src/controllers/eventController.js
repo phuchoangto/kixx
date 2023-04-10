@@ -31,9 +31,7 @@ module.exports = {
         return res.status(400).json({ errors: [{ msg: 'Image is required' }] });
       }
 
-      const {
-        name, description, start, end, imageUrl, facultyId,
-      } = req.body;
+      const { name, description, start, end, imageUrl, facultyId } = req.body;
       const image = req.file;
 
       try {
@@ -80,9 +78,7 @@ module.exports = {
 
       let { id } = req.params;
       id = parseInt(id, 10);
-      const {
-        name, description, start, end, facultyId,
-      } = req.body;
+      const { name, description, start, end, facultyId } = req.body;
       const image = req.file;
 
       try {
@@ -105,4 +101,15 @@ module.exports = {
       }
     },
   ],
+
+  checkInList: async (req, res) => {
+    const { id } = req.params;
+    const event = await eventService.getEventById(id);
+    const students = await eventService.getStudentsByEventId(id);
+    return res.render('dashboard/check-in', {
+      title: 'Check In List',
+      event,
+      students,
+    });
+  },
 };

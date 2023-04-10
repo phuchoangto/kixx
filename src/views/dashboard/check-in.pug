@@ -1,0 +1,40 @@
+extends ../layout/dashboard
+
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          .ui.fluid.card
+            .content
+              .header
+                .ui.header
+                  | Students
+              .meta
+                | Manage students
+            .content
+              table.ui.celled.padded.table
+                thead
+                  tr
+                    th Id
+                    th Last Name
+                    th First Name
+                    th Faculty
+                    th Role
+                    th Actions
+                tbody
+                  each student in students
+                    tr
+                      td #{student.id}
+                      td #{student.lastName}
+                      td #{student.firstName}
+                      td #{student.faculty.name}                                         
+                      td
+                        each role in student.user.roles
+                          .ui.label(class="teal") #{role.role}
+                      td
+                        .ui.icon.buttons
+                          a.ui.basic.button(href='/dashboard/students/' + student.id + '/edit')
+                            i.edit.icon
+                          a.ui.basic.button(href='/dashboard/students/' + student.id + '/delete')
+                            i.trash.icon
