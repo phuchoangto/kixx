@@ -35,4 +35,6 @@ router.get(
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);
 
+router.get('/events/:eventId/certificate', eventController.getCertificate);
+
 module.exports = router;

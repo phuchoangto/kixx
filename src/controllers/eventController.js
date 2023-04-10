@@ -3,6 +3,7 @@ const eventService = require('../services/eventService');
 const facultyService = require('../services/facultyService');
 const { addEventValidator } = require('../validators/addEventValidator');
 const EventAlreadyExistsError = require('../errors/eventAlreadyExistsError');
+const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
 const upload = require('../config/upload');
 
 module.exports = {
@@ -51,6 +52,29 @@ module.exports = {
         if (error instanceof EventAlreadyExistsError) {
           return res.status(409).json({ errors: [{ msg: error.message }] });
         }
+        return res.status(500).json({ errors: [{ msg: error.message }] });
+      }
+    },
+  ],
+
+  getCertificate: [
+    ensureAuthenticated,
+    async (req, res) => {
+      const { eventId } = req.params;
+      try {
+        const pdfBuffer = await eventService.getCertificate(
+          eventId,
+          req.user.id,
+        );
+        res.setHeader('Content-Type', 'application/pdf; charset=utf-8');
+        res.setHeader(
+          'Content-Disposition',
+          'attachment; filename=certificate.pdf',
+        );
+        // utf-8
+        return res.send(pdfBuffer);
+      } catch (error) {
+        console.log(error);
         return res.status(500).json({ errors: [{ msg: error.message }] });
       }
     },
