@@ -1,7 +1,67 @@
 const db = require('../config/db');
 const storageService = require('./storageService');
+const EventNotFoundError = require('../errors/eventNotFoundError');
+const StudentNotFoundError = require('../errors/studentNotFoundError');
 
 module.exports = {
+  getUpComingEvents: async () => {
+    const events = await db.event.findMany({
+      where: {
+        start: {
+          gte: new Date(),
+        },
+      },
+      include: {
+        faculty: true,
+      },
+    });
+    return events;
+  },
+
+  checkIn: async (eventId, studentId) => {
+    const event = await db.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event) {
+      throw new EventNotFoundError();
+    }
+    const student = await db.student.findUnique({
+      where: {
+        id: studentId,
+      },
+    });
+    if (!student) {
+      throw new StudentNotFoundError();
+    }
+    // check if student already checked in
+    const eventCheckIn = await db.eventCheckIn.findFirst({
+      where: {
+        studentId,
+        eventId,
+      },
+    });
+    if (eventCheckIn.length > 0) {
+      return eventCheckIn;
+    }
+    const newEventCheckIn = await db.eventCheckIn.create({
+      data: {
+        student: {
+          connect: {
+            id: studentId,
+          },
+        },
+        event: {
+          connect: {
+            id: eventId,
+          },
+        },
+      },
+    });
+    return newEventCheckIn;
+  },
+
   getAllEvents: async () => {
     const events = await db.event.findMany({
       include: {
