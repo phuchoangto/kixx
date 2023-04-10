@@ -47,6 +47,7 @@ model Student {
 model Faculty {
   id   Int    @id @default(autoincrement())
   name String @unique
+  isArchived  Boolean  @default(false)
 
   students Student[]
   events   Event[]

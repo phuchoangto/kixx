@@ -45,4 +45,8 @@ router.get('/certificates/:eventId', eventController.getCertificate);
 
 router.get('/dashboard/faculties', facultyController.manageFaculty);
 router.post('/dashboard/faculties', facultyController.addFaculty);
+router.get('/dashboard/faculties/:id', facultyController.getOneFaculty);
+router.post('/dashboard/faculties/:id', facultyController.editFaculty);
+router.delete('/dashboard/faculties/:id', facultyController.archiveFaculty);
+
 module.exports = router;
