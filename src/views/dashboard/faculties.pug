@@ -99,6 +99,34 @@ block scripts
         });
     }
 
+    function deleteFaculty(id) {
+        $.ajax({
+            type: "DELETE",
+            url: "/dashboard/faculties/" + id,
+            success: function(response) {
+                console.log(response);
+                iziToast.success({
+                    title: 'Success',
+                    message: response.message,
+                    position: 'topRight'
+                });
+                const table = $('table.ui.celled.padded.table').DataTable();
+                table.row($(`tr[data-id="${id}"]`)).remove().draw(false);
+            },
+            error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#editFacultyErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+    }
+
+
     $(document).ready(function() {
       // init datatable
       $('table.ui.celled.padded.table').DataTable({
