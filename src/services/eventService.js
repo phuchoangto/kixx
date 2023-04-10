@@ -73,7 +73,7 @@ module.exports = {
         eventId,
       },
     });
-    if (eventCheckIn.length > 0) {
+    if (eventCheckIn) {
       return eventCheckIn;
     }
     const newEventCheckIn = await db.eventCheckIn.create({
