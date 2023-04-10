@@ -1,9 +1,12 @@
-module.exports = {
-  index: (req, res) => {
-    res.send('respond with a resource');
-  },
+const eventService = require('../services/eventService');
 
-  home: (req, res) => {
-    res.render('home');
+module.exports = {
+  index: async (req, res) => {
+    const events = await eventService.getAllEvents();
+    return res.render('home/index', { title: 'Manage Events', events });
+  },
+  detail: async (req, res) => {
+    const event = await eventService.getEventById(req.params.id);
+    return res.render('home/detail', { title: 'Event Detail', event });
   },
 };
