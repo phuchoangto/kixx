@@ -24,7 +24,8 @@ router.put('/dashboard/users/:id', userController.editUser);
 router.get('/dashboard/events', eventController.manageEvent);
 router.get('/dashboard/events/add', eventController.addEvent);
 router.post('/dashboard/events/add', eventController.addEventPost);
-// router.post('/dashboard/events/add/upload', eventController.upload);
+router.get('/dashboard/events/:id/edit', eventController.editEvent);
+router.post('/dashboard/events/:id/edit', eventController.editEventPost);
 
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);

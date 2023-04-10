@@ -32,7 +32,6 @@ module.exports = {
       } = req.body;
 
       try {
-        // eslint-disable-next-line max-len
         const student = await studentService.addStudent(
           username,
           email,

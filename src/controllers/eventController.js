@@ -55,4 +55,54 @@ module.exports = {
       }
     },
   ],
+
+  editEvent: async (req, res) => {
+    const { id } = req.params;
+    const event = await eventService.getEventById(id);
+    const faculties = await facultyService.getAllFaculties();
+    return res.render('dashboard/edit-event', {
+      title: 'Edit Event',
+      event,
+      faculties,
+    });
+  },
+
+  editEventPost: [
+    upload.single('image'),
+    addEventValidator,
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(422)
+          .json({ errors: errors.array(), message: 'Validation error' });
+      }
+
+      let { id } = req.params;
+      id = parseInt(id, 10);
+      const {
+        name, description, start, end, facultyId,
+      } = req.body;
+      const image = req.file;
+
+      try {
+        const event = await eventService.editEvent(
+          id,
+          name,
+          description,
+          start,
+          end,
+          image,
+          facultyId,
+        );
+        return res.json({ event, message: 'Event updated successfully' });
+      } catch (error) {
+        if (error instanceof EventAlreadyExistsError) {
+          return res.status(409).json({ errors: [{ msg: error.message }] });
+        }
+        console.log(error);
+        return res.status(500).json({ errors: [{ msg: error.message }] });
+      }
+    },
+  ],
 };
