@@ -1,16 +1,23 @@
 doctype html
 html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title= title
-        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css")
-        
-        block styles
-    body
-        block content
-        script(src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
-        script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
-        script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js")
-        block scripts
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css")
+
+    block styles
+  body
+    .ui.top.fixed.menu
+      .item
+        img(src='https://semantic-ui.com/images/logo.png' alt='logo')
+      a.item Features
+      a.item Testimonials
+      a.item Sign-in
+
+    block content
+    script(src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js")
+    block scripts
