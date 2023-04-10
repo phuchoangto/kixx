@@ -148,4 +148,15 @@ module.exports = {
     res.setHeader('Content-Disposition', 'attachment; filename="check-in.csv"');
     res.send(csv);
   },
+
+  archiveEvent: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const event = await eventService.archiveEvent(id);
+      return res.json({ event, message: 'Event archived successfully' });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ errors: [{ msg: error.message }] });
+    }
+  },
 };

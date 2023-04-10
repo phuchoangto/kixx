@@ -59,6 +59,7 @@ model Event {
   start       DateTime
   end         DateTime
   imageUrl    String?
+  isArchived  Boolean  @default(false)
 
   facultyId Int?
   faculty   Faculty? @relation(fields: [facultyId], references: [id])
