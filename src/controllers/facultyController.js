@@ -41,4 +41,53 @@ module.exports = {
       }
     },
   ],
+  getOneFaculty: async (req, res) => {
+    const { id } = req.params;
+    const faculty = await facultyService.getOneFaculty(id);
+    res.json(faculty);
+  },
+  editFaculty: [
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(422)
+          .json({ errors: errors.array(), message: 'Validation error' });
+      }
+      const { id } = req.params;
+      const {
+        name,
+      } = req.body;
+
+      try {
+        const faculty = await facultyService.editFaculty(id, name);
+        if (faculty) {
+          return res.json({ faculty, message: 'Faculty edited successfully' });
+        }
+        return res.status(404).json({ errors: [{ msg: 'Faculty not found' }] });
+      } catch (error) {
+        console.log(error);
+        return res
+          .status(500)
+          .json({ errors: [{ msg: error.message }] });
+      }
+    },
+  ],
+  archiveFaculty: [
+    async (req, res) => {
+      const { id } = req.params;
+      try {
+        const faculty = await facultyService.archiveFaculty(id);
+        if (faculty) {
+          return res.json({ faculty, message: 'Faculty deleted successfully' });
+        }
+        return res.status(404).json({ errors: [{ msg: 'Faculty not found' }] });
+      } catch (error) {
+        console.log(error);
+        return res
+          .status(500)
+          .json({ errors: [{ msg: error.message }] });
+      }
+    },
+  ],
 };

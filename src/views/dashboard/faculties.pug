@@ -31,7 +31,7 @@ block content
                         .ui.icon.buttons 
                           .ui.basic.button(onclick=`showEdit(${faculty.id})`)
                             i.edit.icon
-                          ui.basic.button(href=`/dashboard/faculties/${faculty.id}/delete`)
+                          .ui.basic.button(onclick=`deleteFaculty(${faculty.id})`)
                             i.trash.icon
 
 block modal
@@ -51,20 +51,21 @@ block modal
       #addFacultyButton.ui.positive.right.labeled.icon.button
         | Yep, that's me
         i.checkmark.icon 
-    .ui.modal#editFacultyModal
+  .ui.modal#editFacultyModal
     i.close.icon
     .header
       | Edit Faculty
     .content
-      form#addFacultyForm.ui.form(method='POST')
+      form#editFacultyForm.ui.form(method='POST')
+        input(type='hidden' name='edit_id' placeholder='Faculty id')
         .field
           label Name
           input(type='text' name='edit_name' placeholder='Faculty name')
-        #addFacultyErrors.ui.error.message
+        #editFacultyErrors.ui.error.message
     .actions
       .ui.black.deny.button
         | Nope
-      #addFacultyButton.ui.positive.right.labeled.icon.button
+      #editFacultyButton.ui.positive.right.labeled.icon.button
         | Yep, that's me
         i.checkmark.icon 
 
@@ -74,7 +75,30 @@ block scripts
   script.
     function openAddFacultyModal() {
         $('#addFacultyModal').modal('show');
-        }
+      }
+    function showEdit(id) {
+        $.ajax({
+            type: "GET",
+            url: "/dashboard/faculties/" + id,
+            success: function(response) {
+                console.log(response);
+                $('#editFacultyForm input[name="edit_id"]').val(response.id);
+                $('#editFacultyForm input[name="edit_name"]').val(response.name);
+                $('#editFacultyModal').modal('show');
+            },
+            error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#editFacultyErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+    }
+
     $(document).ready(function() {
       // init datatable
       $('table.ui.celled.padded.table').DataTable({
@@ -126,5 +150,49 @@ block scripts
         });
       });
 
+      $('#editFacultyButton').click(function(e) {
+        e.stopPropagation();
+        var id = $('#editFacultyForm input[name="edit_id"]').val();
+        $.ajax({
+          type: 'POST',
+          url: '/dashboard/faculties/' + id,
+          data: {
+            name: $('#editFacultyForm input[name="edit_name"]').val(),
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+
+            const table = $('table.ui.celled.padded.table').DataTable();
+            table.row($(`tr[data-id="${data.faculty.id}"]`)).data([
+                data.faculty.id,
+                data.faculty.name,
+                `
+                <div class="ui icon buttons">
+                    <a class="ui basic button" onclick="showEdit(${data.faculty.id})"><i class="edit icon"></i></a>
+                    <a class="ui basic button" href="/dashboard/faculties/${data.faculty.id}/delete"><i class="trash icon"></i></a>
+                </div>
+                `
+            ]).draw(false);
+
+            // hide modal
+            $('#editFacultyModal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#editFacultyErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
 
     });
