@@ -27,7 +27,7 @@ block content
                     th Actions
                 tbody
                   each event in events
-                    tr
+                    tr(key=event.id)
                       td #{event.id}
                       td #{event.name}
                       td
@@ -41,7 +41,7 @@ block content
                         .ui.icon.buttons
                           a.ui.basic.button(href='/dashboard/events/' + event.id + '/edit')
                             i.edit.icon
-                          a.ui.basic.button(href='/dashboard/events/' + event.id + '/delete')
+                          a.ui.basic.button(onclick='deleteEvent(' + event.id + ')')
                             i.trash.icon
                           a.ui.basic.button(href='/dashboard/events/' + event.id + '/check-in')
                             i.check.icon
@@ -52,3 +52,48 @@ block scripts
     $('.ui.celled.padded.table').DataTable({
       "order": [[ 0, "desc" ]]
     });
+
+    function deleteEvent(id) {
+      // ask for confirmation
+      iziToast.question({
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        id: 'question',
+        zindex: 999,
+        title: 'Are you sure?',
+        message: 'This action cannot be undone.',
+        position: 'center',
+        buttons: [
+          ['<button><b>YES</b></button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            $.ajax({
+              url: '/dashboard/events/' + id,
+              type: 'DELETE',
+              success: function(result) {
+                iziToast.success({
+                  title: 'Success',
+                  message: result.message,
+                  position: 'topRight'
+                });
+                // update html
+                var datatable = $('.ui.celled.padded.table').DataTable();
+                datatable.row($('tr[key=' + id + ']')).remove().draw();
+              },
+              error: function(err) {
+                iziToast.error({
+                  title: 'Error',
+                  message: err.responseJSON.message,
+                  position: 'topRight'
+                });
+              }
+            });
+          }, true],
+          ['<button>NO</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          }],
+        ],
+      });
+      
+    }

@@ -29,6 +29,7 @@ router.post('/dashboard/events/add', eventController.addEventPost);
 router.get('/dashboard/events/:id/edit', eventController.editEvent);
 router.post('/dashboard/events/:id/edit', eventController.editEventPost);
 router.get('/dashboard/events/:id/check-in', eventController.checkInList);
+router.delete('/dashboard/events/:id', eventController.archiveEvent);
 router.get(
   '/dashboard/events/:id/check-in/export',
   eventController.exportCheckInList,

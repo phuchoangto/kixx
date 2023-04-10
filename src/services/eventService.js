@@ -40,6 +40,7 @@ module.exports = {
         start: {
           gte: new Date(),
         },
+        isArchived: false,
       },
       include: {
         faculty: true,
@@ -94,6 +95,9 @@ module.exports = {
 
   getAllEvents: async () => {
     const events = await db.event.findMany({
+      where: {
+        isArchived: false,
+      },
       include: {
         faculty: true,
       },
@@ -294,5 +298,17 @@ module.exports = {
     const csv = converter.json2csv(data);
 
     return csv;
+  },
+
+  archiveEvent: async (id) => {
+    const event = await db.event.update({
+      where: {
+        id: parseInt(id, 10),
+      },
+      data: {
+        isArchived: true,
+      },
+    });
+    return event;
   },
 };
