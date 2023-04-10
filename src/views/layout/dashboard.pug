@@ -7,8 +7,8 @@ html(lang="en")
     title= title
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css")
-    link(rel="stylesheet", href="/css/dashboard.css")
-    link(rel="stylesheet", href="https://cdn.datatables.net/v/se/dt-1.13.4/datatables.min.css")
+    link(rel="stylesheet" href="/css/dashboard.css")
+    link(rel="stylesheet" href="https://cdn.datatables.net/v/se/dt-1.13.4/datatables.min.css")
     block styles
   body
     #sidebar.ui.sidebar.inverted.vertical.menu.sidebar-menu
@@ -87,7 +87,6 @@ html(lang="en")
               |                     Logout
 
     block content
-    script(src="/js/dashboard.js") 
     block modal
     script(src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
     script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js")
@@ -95,3 +94,4 @@ html(lang="en")
     script(src="https://cdn.datatables.net/v/se/dt-1.13.4/datatables.min.js") 
     script(src="/js/dashboard.js") 
     block scripts
+    script("https://cdnjs.cloudflare.com/ajax/libs/striptags/4.2.0/striptags.min.js")

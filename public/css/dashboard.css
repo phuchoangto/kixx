@@ -28,7 +28,9 @@ body ::-webkit-scrollbar {
 .main-content {
   margin-top: 40px;
 }
-
+.ck-editor__editable {
+  min-height: 400px !important;
+}
 @media (min-width: 768px) {
   .ui.vertical.menu.sidebar-menu {
     visibility: visible;

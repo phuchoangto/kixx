@@ -2,23 +2,19 @@ const { body } = require('express-validator');
 
 module.exports = {
   addEventValidator: [
-    body('name')
-      .notEmpty()
-      .withMessage('Name is required'),
-    body('description')
-      .notEmpty()
-      .withMessage('Description is required'),
+    body('name').notEmpty().withMessage('Name is required'),
+    body('description').notEmpty().withMessage('Description is required'),
     body('start')
       .notEmpty()
       .withMessage('Start date is required')
-      .isDate()
+      .isISO8601()
       .withMessage('Start date is invalid')
       .isAfter()
       .withMessage('Start date must be in the future'),
     body('end')
       .notEmpty()
       .withMessage('End date is required')
-      .isDate()
+      .isISO8601()
       .withMessage('End date is invalid')
       .isAfter()
       .withMessage('End date must be in the future')
@@ -28,11 +24,6 @@ module.exports = {
         }
         return true;
       }),
-    body('imageUrl')
-      .isURL()
-      .withMessage('Image URL is invalid'),
-    body('facultyId')
-      .isInt()
-      .withMessage('Faculty is invalid'),
+    body('facultyId').isInt().withMessage('Faculty is invalid'),
   ],
 };
