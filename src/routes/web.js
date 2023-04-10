@@ -37,6 +37,8 @@ router.get(
 
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);
+router.get('/dashboard/students/:id', studentController.getOneStudent);
+router.put('/dashboard/students/:id', studentController.editStudent);
 
 router.get('/certificates/:eventId', eventController.getCertificate);
 
