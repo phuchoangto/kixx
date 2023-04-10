@@ -27,8 +27,15 @@ router.get('/dashboard/events/add', eventController.addEvent);
 router.post('/dashboard/events/add', eventController.addEventPost);
 router.get('/dashboard/events/:id/edit', eventController.editEvent);
 router.post('/dashboard/events/:id/edit', eventController.editEventPost);
+router.get('/dashboard/events/:id/check-in', eventController.checkInList);
+router.get(
+  '/dashboard/events/:id/check-in/export',
+  eventController.exportCheckInList,
+);
 
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);
+
+router.get('/events/:eventId/certificate', eventController.getCertificate);
 
 module.exports = router;

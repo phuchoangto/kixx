@@ -10,7 +10,7 @@ module.exports = {
     jwtAuthenticated,
     async (req, res) => {
       try {
-        const events = await eventService.getUpcomingEvents();
+        const events = await eventService.getUpComingEvents();
         res.json(events);
       } catch (err) {
         console.error(err);
@@ -25,7 +25,9 @@ module.exports = {
     async (req, res) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array(), message: 'Validation error' });
+        res
+          .status(422)
+          .json({ errors: errors.array(), message: 'Validation error' });
         return;
       }
       try {

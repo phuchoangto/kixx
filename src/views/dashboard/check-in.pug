@@ -1,0 +1,40 @@
+extends ../layout/dashboard
+
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          .ui.fluid.card
+            .content
+              a.ui.right.floated.large.green.labeled.icon.button(href='check-in/export')
+                i.plus.icon
+                | Export to CSV
+              .header
+                .ui.header
+                  | #{event.name}
+              .meta
+                | #{checkIns.length} students checked in
+            .content
+              table.ui.celled.padded.table
+                thead
+                  tr
+                    th Id
+                    th Last Name
+                    th First Name
+                tbody
+                  each checkIn in checkIns
+                    tr
+                      td #{checkIn.student.id}
+                      td #{checkIn.student.lastName}
+                      td #{checkIn.student.firstName}
+
+block scripts
+  script.
+    // init data table
+    var table = $('.ui.celled.padded.table').DataTable({
+      "order": [[ 0, "desc" ]],
+      buttons: [
+        'excel'
+      ]
+    });

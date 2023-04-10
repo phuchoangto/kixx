@@ -1,27 +1,25 @@
 extends ../layout/main
 
 block content 
-  .pusher
+  .pusher(style='margin-top: 50px;')
     .main-content
       .ui.grid.stackable.padded
         .ui.container-fluid.column
-          .ui.fluid.card
-            .content
-              .ui.link.cards
-                each event in events
-                    .card(style='width: 300px;')
-                      a(href=`/${event.id}`)
-                        .image
-                          img(src=`${event.imageUrl}` style='width: 300px; height: 300px' alt='Event Image')
-                        .content 
-                          .header
-                            h3(style='color: black') #{event.name} 
-                          .meta
-                            a #{event.faculty.name}
-                          .description
-                            | #{event.start.toLocaleDateString('en-GB')} #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
-                            br
-                            | #{event.end.toLocaleDateString('en-GB')} #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                        .extra.content
-                          span.right.floated
-                            | #{Math.floor((event.start - new Date()) / 1000 / 60 / 60 / 24)} days left
+          .ui.link.cards
+            each event in events
+              .card(style='width: 300px;')
+                a(href=`/${event.id}`)
+                  .image
+                    img(src=`${event.imageUrl}` alt='logo' class='ui image')
+                  .content 
+                    .header
+                      h3(style='color: black') #{event.name} 
+                    .meta
+                      a #{event.faculty.name}
+                    .description
+                      | #{event.start.toLocaleDateString('en-GB')} #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
+                      br
+                      | #{event.end.toLocaleDateString('en-GB')} #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  .extra.content
+                    span.right.floated
+                      | #{Math.floor((event.start - new Date()) / 1000 / 60 / 60 / 24)} days left
