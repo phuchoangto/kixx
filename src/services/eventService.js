@@ -1,6 +1,6 @@
+const PDFDocument = require('pdfkit');
 const db = require('../config/db');
 const storageService = require('./storageService');
-const PDFDocument = require('pdfkit');
 
 module.exports = {
   getAllEvents: async () => {
