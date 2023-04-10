@@ -1,15 +1,9 @@
 const db = require('../config/db');
-const EventNotFoundError = require('../errors/eventNotFoundError');
-const StudentNotFoundError = require('../errors/studentNotFoundError');
+const storageService = require('./storageService');
 
 module.exports = {
-  getUpcomingEvents: async () => {
+  getAllEvents: async () => {
     const events = await db.event.findMany({
-      where: {
-        start: {
-          gte: new Date(),
-        },
-      },
       include: {
         faculty: true,
       },
@@ -17,49 +11,34 @@ module.exports = {
     return events;
   },
 
-  checkIn: async (eventId, studentId) => {
-    const event = await db.event.findUnique({
-      where: {
-        id: eventId,
-      },
-    });
-    if (!event) {
-      throw new EventNotFoundError();
-    }
-    const student = await db.student.findUnique({
-      where: {
-        id: studentId,
-      },
-    });
-    if (!student) {
-      throw new StudentNotFoundError();
-    }
-
-    // check if student has already checked in
-    const existingCheckIn = await db.eventCheckIn.findFirst({
-      where: {
-        eventId,
-        studentId,
-      },
-    });
-    if (existingCheckIn) {
-      return existingCheckIn;
-    }
-
-    const eventCheckIn = await db.eventCheckIn.create({
+  addEvent: async (
+    name,
+    description,
+    start,
+    end,
+    image,
+    imageUrl,
+    facultyId,
+  ) => {
+    const fileExtension = image.originalname.split('.').pop();
+    const fileName = `${Date.now()}.${fileExtension}`;
+    const publicUrl = await storageService.uploadFile(image, fileName);
+    const startDateTime = new Date(start);
+    const endDateTime = new Date(end);
+    const event = await db.event.create({
       data: {
-        event: {
+        name,
+        description,
+        start: startDateTime,
+        end: endDateTime,
+        imageUrl: publicUrl,
+        faculty: {
           connect: {
-            id: eventId,
-          },
-        },
-        student: {
-          connect: {
-            id: studentId,
+            id: parseInt(facultyId, 10),
           },
         },
       },
     });
-    return eventCheckIn;
+    return event;
   },
 };

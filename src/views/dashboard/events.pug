@@ -1,0 +1,52 @@
+extends ../layout/dashboard
+block content
+  .pusher
+    .main-content
+      .ui.grid.stackable.padded
+        .ui.container-fluid.column
+          .ui.fluid.card
+            .content
+              a.ui.right.floated.large.green.labeled.icon.button(href='/dashboard/events/add')
+                i.plus.icon
+                | Add Event
+              .header
+                .ui.header
+                  | Events
+              .meta
+                | Manage events
+            .content
+              table.ui.celled.padded.table
+                thead
+                  tr
+                    th Id
+                    th Name
+                    th Start
+                    th End
+                    th Image 
+                    th Faculty
+                    th Actions
+                tbody
+                  each event in events
+                    tr
+                      td #{event.id}
+                      td #{event.name}
+                      td
+                        | #{event.start.toLocaleDateString('en-GB')} #{event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
+                      td
+                        | #{event.end.toLocaleDateString('en-GB')} #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      td 
+                        img(src=`${event.imageUrl}` style='max-width: 100px;' alt='Event Image')
+                      td #{event.faculty.name}
+                      td
+                        .ui.icon.buttons
+                          a.ui.basic.button(href='/dashboard/events/' + event.id + '/edit')
+                            i.edit.icon
+                          a.ui.basic.button(href='/dashboard/events/' + event.id + '/delete')
+                            i.trash.icon
+
+block scripts
+  script.
+    // init data table
+    $('.ui.celled.padded.table').DataTable({
+      "order": [[ 0, "desc" ]]
+    });
