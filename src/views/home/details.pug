@@ -18,6 +18,5 @@ block content
                   p
                     i.calendar.check.outline.icon
                     | #{event.end.toLocaleDateString('en-GB')} #{event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-              .ui.borderless.main.menu
-              .ui.text.container
+              .ui.text.container(style='margin-top: 100px;')
                 p!= event.description
