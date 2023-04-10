@@ -18,5 +18,7 @@ router.post('/dashboard/users', userController.addUser);
 
 router.get('/dashboard/students', studentController.manageStudent);
 router.post('/dashboard/students', studentController.addStudent);
+router.get('/dashboard/students/:id', studentController.getOneStudent);
+router.put('/dashboard/students/:id', studentController.editStudent);
 
 module.exports = router;

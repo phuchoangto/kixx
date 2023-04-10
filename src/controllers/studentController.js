@@ -42,4 +42,38 @@ module.exports = {
       }
     },
   ],
+  getOneStudent: async (req, res) => {
+    const { id } = req.params;
+    const student = await studentService.getOneStudent(id);
+    res.json(student);
+  },
+  editStudent: [
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(422)
+          .json({ errors: errors.array(), message: 'Validation error' });
+      }
+      const originId = req.params.id;
+      const {
+        id, lastName, firstName, facultyId,
+      } = req.body;
+
+      try {
+        // eslint-disable-next-line max-len
+        const student = await studentService.editStudent(originId, id, lastName, firstName, facultyId);
+        if (student) {
+          return res.json({ student, message: 'Student edited successfully' });
+        }
+        return res.status(404).json({ errors: [{ msg: 'Student not found' }] });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        return res
+          .status(500)
+          .json({ errors: [{ msg: error.message }] });
+      }
+    },
+  ],
 };

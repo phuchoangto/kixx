@@ -90,4 +90,47 @@ module.exports = {
 
     return newStudent;
   },
+
+  getOneStudent: async (id) => {
+    const student = await db.student.findUnique({
+      where: {
+        id: parseInt(id, 10),
+      },
+      include: {
+        user: {
+          include: {
+            roles: true,
+          },
+        },
+        faculty: true,
+      },
+    });
+    return student;
+  },
+
+  editStudent: async (
+    originId,
+    id,
+    lastName,
+    firstName,
+    facultyId,
+  ) => {
+    const updatedStudent = await db.student.update({
+      data: {
+        id: parseInt(id, 10),
+        firstName,
+        lastName,
+        facultyId: parseInt(facultyId, 10),
+      },
+      where: {
+        id: parseInt(originId, 10),
+      },
+      include: {
+        user: true,
+        faculty: true,
+      },
+    });
+    return updatedStudent;
+  },
+
 };

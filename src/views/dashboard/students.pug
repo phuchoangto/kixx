@@ -27,7 +27,7 @@ block content
                     th Actions
                 tbody
                   each student in students
-                    tr
+                    tr(data-id= student.id)
                       td #{student.id}
                       td #{student.lastName}
                       td #{student.firstName}
@@ -36,13 +36,13 @@ block content
                         each role in student.user.roles
                           .ui.label(class="teal") #{role.role}
                       td
-                        .ui.icon.buttons
-                          a.ui.basic.button(href='/dashboard/students/' + student.id + '/edit')
+                        .ui.icon.buttons 
+                          .ui.basic.button(onclick=`showEdit(${student.id})`)
                             i.edit.icon
-                          a.ui.basic.button(href='/dashboard/students/' + student.id + '/delete')
+                          ui.basic.button(href=`/dashboard/students/${student.id}/delete`)
                             i.trash.icon
 block modal
-  .ui.modal
+  .ui.modal#addStudentModal
     i.close.icon
     .header
       | Add Student
@@ -77,12 +77,70 @@ block modal
         | Nope
       #addStudentButton.ui.positive.right.labeled.icon.button
         | Yep, that's me
+        i.checkmark.icon 
+  .ui.modal#editStudentModal
+    i.close.icon
+    .header
+      | Edit Student
+    .content
+      form#editStudentForm.ui.form(method='POST')
+        .field
+          input(type='hidden' name='edit_origin_id')
+        .field
+          label Student ID
+          input(type='text' name='edit_id' placeholder='Student ID')
+        .field
+          label Faculty
+          select.ui.dropdown(name='edit_facultyId')
+            each faculty in faculties
+              option(value=faculty.id, key=faculty.id) #{faculty.name}
+        .field
+          label Last Name 
+          input(type='text' name='edit_lastName' placeholder='Last Name')
+        .field
+          label First Name
+          input(type='text' name='edit_firstName' placeholder='First Name')
+        #editStudentErrors.ui.error.message
+    .actions
+      .ui.black.deny.button
+        | Nope
+      #editStudentButton.ui.positive.right.labeled.icon.button
+        | Yep, that's me
         i.checkmark.icon
+
+
+
 
 block scripts
   script.
     function openAddStudentModal() {
-      $('.ui.modal').modal('show');
+      $('#addStudentModal').modal('show');
+    }
+
+    function showEdit(id) {
+        $.ajax({
+            type: "GET",
+            url: "/dashboard/students/" + id,
+            success: function(response) {
+                console.log(response);
+                $('#editStudentForm input[name="edit_origin_id"]').val(response.id);
+                $('#editStudentForm input[name="edit_id"]').val(response.id);
+                $('#editStudentForm input[name="edit_lastName"]').val(response.lastName);
+                $('#editStudentForm input[name="edit_firstName"]').val(response.firstName);
+                $('#editStudentForm select[name="edit_facultyId"]').dropdown('set selected', response.faculty.id);
+                $('#editStudentModal').modal('show');
+            },
+            error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#addStudentErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
     }
 
     $(document).ready(function() {
@@ -92,6 +150,58 @@ block scripts
         order: [[0, 'desc']]
       });
 
+      $('#editStudentButton').click(function(e) {
+        e.stopPropagation();
+        var selectedOption = $('#editStudentForm select[name="edit_facultyId"]');
+        var selectedKey = selectedOption.val();
+        var originId = $('#editStudentForm input[name="edit_origin_id"]').val();
+        $.ajax({
+          type: 'PUT',
+          url: '/dashboard/students/' + originId,
+          data: {
+            originId: $('#editStudentForm input[name="edit_origin_id"]').val(),
+            id: $('#editStudentForm input[name="edit_id"]').val(),
+            lastName: $('#editStudentForm input[name="edit_lastName"]').val(),
+            firstName: $('#editStudentForm input[name="edit_firstName"]').val(),
+            facultyId: selectedKey
+          },
+          success: function(data) {
+            console.log(data);
+            iziToast.success({
+              title: 'Success',
+              message: data.message,
+              position: 'topRight'
+            });
+            
+            const table = $('table.ui.celled.padded.table').DataTable();
+            const tr = $(`tr[data-id=${originId}]`);
+            table.row(tr).data([
+              data.student.id,
+              data.student.lastName,
+              data.student.firstName,
+              data.student.faculty.name,
+              `<div class="ui label teal">STUDENT</div>`,
+              `
+                <div class="ui icon buttons">
+                  <a class="ui basic button" onclick="showEdit(${data.student.id})"><i class="edit icon"></i></a>
+                  <a class="ui basic button" href="/dashboard/students/${data.student.id}/delete"><i class="trash icon"></i></a>
+                </div>
+              `
+            ]).draw(false);
+            $('#editStudentModal').modal('hide');
+          },
+          error: function(data) {
+            console.log(data);
+            const errors = data.responseJSON.errors;
+            const errorList = $('#editStudentErrors');
+            errorList.empty();
+            errors.forEach(function(error) {
+              errorList.append(`<li>${error.msg}</li>`);
+            });
+            errorList.show();
+          }
+        });
+      });
 
       $('#addStudentButton').click(function(e) {
         e.stopPropagation();
@@ -105,7 +215,7 @@ block scripts
             email: $('#addStudentForm input[name="email"]').val(),
             password: $('#addStudentForm input[name="password"]').val(),
             id: $('#addStudentForm input[name="id"]').val(),
-              facultyId: selectedKey,
+            facultyId: selectedKey,
             lastName: $('#addStudentForm input[name="lastName"]').val(),
             firstName: $('#addStudentForm input[name="firstName"]').val(),
           },
@@ -129,8 +239,8 @@ block scripts
               <div class="ui icon buttons">
                 <a class="ui basic button" href="/dashboard/students/${data.student.id}/edit"><i class="edit icon"></i></a>
                 <a class="ui basic button" href="/dashboard/students/${data.student.id}/delete"><i class="trash icon"></i></a>
-</div>
-`
+              </div>
+              `
             ]).draw(false);
 
             // hide modal
