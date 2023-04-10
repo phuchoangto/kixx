@@ -42,7 +42,7 @@ block content
                           a.ui.basic.button(href='/dashboard/students/' + student.id + '/delete')
                             i.trash.icon
 block modal
-  .ui.modal
+  .ui.modal#addStudentModal
     i.close.icon
     .header
       | Add Student
@@ -82,7 +82,7 @@ block modal
 block scripts
   script.
     function openAddStudentModal() {
-      $('.ui.modal').modal('show');
+      $('#addStudentModal').modal('show');
     }
 
     $(document).ready(function() {
