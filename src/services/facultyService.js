@@ -5,7 +5,7 @@ module.exports = {
   getAllFaculties: async () => {
     const faculties = await db.faculty.findMany({
       where: {
-        isArchive: false,
+        isArchived: false,
       },
     });
     return faculties;
@@ -62,7 +62,7 @@ module.exports = {
   archiveFaculty: async (id) => {
     const faculty = await db.faculty.update({
       data: {
-        isArchive: true,
+        isArchived: true,
       },
       where: {
         id: parseInt(id, 10),
